@@ -1,5 +1,6 @@
 package com.seathappens.common.exception;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -10,6 +11,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -54,6 +56,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGenericException(Exception exception) {
+
+        log.error(ErrorCode.INTERNAL_SERVER_ERROR.message(), exception);
 
         ProblemDetail problemDetail = ProblemDetail.forStatus(
                 HttpStatus.INTERNAL_SERVER_ERROR
