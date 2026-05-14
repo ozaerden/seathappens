@@ -9,6 +9,8 @@ public class ApiVersioningConfig implements WebMvcConfigurer {
 
     @Override
     public void configureApiVersioning(ApiVersionConfigurer configurer) {
-        configurer.useRequestHeader("API-Version");
+        configurer
+                .useRequestHeader("API-Version")
+                .setDefaultVersion("1");
     }
 }
