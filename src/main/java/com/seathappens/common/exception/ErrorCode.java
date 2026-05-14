@@ -3,6 +3,7 @@ package com.seathappens.common.exception;
 public enum ErrorCode {
 
     VENUE_NOT_FOUND("VENUE_NOT_FOUND", "Venue not found"),
+    EVENT_NOT_FOUND("EVENT_NOT_FOUND", "Event not found"),
     VALIDATION_FAILED("VALIDATION_FAILED", "Validation failed"),
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", "Unexpected server error");
 

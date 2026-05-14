@@ -28,7 +28,7 @@ public class VenueController {
         return venueService.createVenue(request);
     }
 
-    @Operation(summary = "Get a venue by using it's ID.")
+    @Operation(summary = "Get venue by id.")
     @GetMapping(value = "/{id}", version = "1")
     public VenueResponse getVenueById(@PathVariable UUID id) {
         return venueService.getVenueById(id);
