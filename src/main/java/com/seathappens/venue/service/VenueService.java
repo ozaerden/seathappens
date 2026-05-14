@@ -1,5 +1,7 @@
 package com.seathappens.venue.service;
 
+import com.seathappens.common.exception.ErrorCode;
+import com.seathappens.common.exception.ResourceNotFoundException;
 import com.seathappens.venue.dto.request.CreateVenueRequest;
 import com.seathappens.venue.dto.response.VenueResponse;
 import com.seathappens.venue.entity.Venue;
@@ -33,7 +35,7 @@ public class VenueService {
     public VenueResponse getVenueById(UUID id) {
         return venueRepository.findById(id)
                 .map(VenueResponse::from)
-                .orElseThrow(() -> new IllegalArgumentException("Venue not found"));
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.VENUE_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
