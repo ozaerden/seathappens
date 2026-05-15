@@ -1,2 +1,2 @@
 # seathappens
-Initial project setup
+Seat Happens
