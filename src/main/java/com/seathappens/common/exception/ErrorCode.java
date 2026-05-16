@@ -10,7 +10,7 @@ public enum ErrorCode {
     INSUFFICIENT_INVENTORY("INSUFFICIENT_INVENTORY", "Insufficient inventory"),
     RESERVATION_ALREADY_CANCELLED("RESERVATION_ALREADY_CANCELLED", "Reservation is already cancelled"),
     RESERVATION_NOT_ACTIVE("RESERVATION_NOT_ACTIVE", "Reservation is not active"),
-
+    CONCURRENT_MODIFICATION("CONCURRENT_MODIFICATION", "Resource was modified by another transaction. Please retry."),
     VALIDATION_FAILED("VALIDATION_FAILED", "Validation failed"),
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", "Unexpected server error");
 

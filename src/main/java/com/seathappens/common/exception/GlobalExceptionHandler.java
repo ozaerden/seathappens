@@ -1,8 +1,10 @@
 package com.seathappens.common.exception;
 
+import jakarta.persistence.OptimisticLockException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -65,6 +67,26 @@ public class GlobalExceptionHandler {
         problemDetail.setTitle("Business Rule Violation");
         problemDetail.setType(URI.create("/errors/business-rule-violation"));
         problemDetail.setProperty("code", exception.getErrorCode().code());
+
+        return problemDetail;
+    }
+
+    @ExceptionHandler({
+            OptimisticLockException.class,
+            ObjectOptimisticLockingFailureException.class
+    })
+    public ProblemDetail handleOptimisticLockingException(Exception exception) {
+
+        log.warn(ErrorCode.CONCURRENT_MODIFICATION.message(), exception);
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                ErrorCode.CONCURRENT_MODIFICATION.message()
+        );
+
+        problemDetail.setTitle("Concurrent Modification");
+        problemDetail.setType(URI.create("/errors/concurrent-modification"));
+        problemDetail.setProperty("code", ErrorCode.CONCURRENT_MODIFICATION.code());
 
         return problemDetail;
     }
