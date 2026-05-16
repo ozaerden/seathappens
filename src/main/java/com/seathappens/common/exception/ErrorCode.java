@@ -11,6 +11,8 @@ public enum ErrorCode {
     RESERVATION_ALREADY_CANCELLED("RESERVATION_ALREADY_CANCELLED", "Reservation is already cancelled"),
     RESERVATION_NOT_ACTIVE("RESERVATION_NOT_ACTIVE", "Reservation is not active"),
     CONCURRENT_MODIFICATION("CONCURRENT_MODIFICATION", "Resource was modified by another transaction. Please retry."),
+    ORDER_NOT_FOUND("ORDER_NOT_FOUND", "Order not found"),
+    RESERVATION_ALREADY_CONVERTED("RESERVATION_ALREADY_CONVERTED", "Reservation already converted"),
     VALIDATION_FAILED("VALIDATION_FAILED", "Validation failed"),
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", "Unexpected server error");
 
