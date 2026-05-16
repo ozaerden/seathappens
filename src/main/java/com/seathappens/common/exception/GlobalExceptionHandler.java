@@ -54,6 +54,21 @@ public class GlobalExceptionHandler {
         return problemDetail;
     }
 
+    @ExceptionHandler(BusinessException.class)
+    public ProblemDetail handleBusinessException(BusinessException exception) {
+
+        ProblemDetail problemDetail = ProblemDetail.forStatusAndDetail(
+                HttpStatus.CONFLICT,
+                exception.getMessage()
+        );
+
+        problemDetail.setTitle("Business Rule Violation");
+        problemDetail.setType(URI.create("/errors/business-rule-violation"));
+        problemDetail.setProperty("code", exception.getErrorCode().code());
+
+        return problemDetail;
+    }
+
     @ExceptionHandler(Exception.class)
     public ProblemDetail handleGenericException(Exception exception) {
 
