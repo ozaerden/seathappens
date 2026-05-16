@@ -4,6 +4,8 @@ import com.seathappens.common.exception.ErrorCode;
 import com.seathappens.common.exception.ResourceNotFoundException;
 import com.seathappens.event.entity.Event;
 import com.seathappens.event.repository.EventRepository;
+import com.seathappens.inventory.entity.Inventory;
+import com.seathappens.inventory.repository.InventoryRepository;
 import com.seathappens.tickettype.dto.request.CreateTicketTypeRequest;
 import com.seathappens.tickettype.dto.response.TicketTypeResponse;
 import com.seathappens.tickettype.entity.TicketType;
@@ -21,6 +23,7 @@ public class TicketTypeService {
 
     private final TicketTypeRepository ticketTypeRepository;
     private final EventRepository eventRepository;
+    private final InventoryRepository inventoryRepository;
 
     @Transactional
     public TicketTypeResponse createTicketType(CreateTicketTypeRequest request) {
@@ -35,7 +38,19 @@ public class TicketTypeService {
                 .totalQuantity(request.totalQuantity())
                 .build();
 
-        return TicketTypeResponse.from(ticketTypeRepository.save(ticketType));
+        TicketType savedTicketType = ticketTypeRepository.save(ticketType);
+
+        Inventory inventory = Inventory.builder()
+                .ticketType(savedTicketType)
+                .totalQuantity(savedTicketType.getTotalQuantity())
+                .availableQuantity(savedTicketType.getTotalQuantity())
+                .reservedQuantity(0)
+                .soldQuantity(0)
+                .build();
+
+        inventoryRepository.save(inventory);
+
+        return TicketTypeResponse.from(savedTicketType);
     }
 
     @Transactional(readOnly = true)
