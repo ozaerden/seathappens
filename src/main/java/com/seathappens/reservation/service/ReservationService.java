@@ -88,4 +88,26 @@ public class ReservationService {
         return ReservationResponse.from(reservation);
     }
 
+    @Transactional
+    public int expireReservations() {
+        List<Reservation> expiredReservations = reservationRepository.findByStatusAndExpiresAtBefore(
+                ReservationStatus.ACTIVE,
+                LocalDateTime.now()
+        );
+
+        expiredReservations.forEach(this::expireReservation);
+
+        return expiredReservations.size();
+    }
+
+    private void expireReservation(Reservation reservation) {
+        Inventory inventory = inventoryRepository.findByTicketTypeId(reservation.getTicketType().getId())
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.INVENTORY_NOT_FOUND));
+
+        inventory.setAvailableQuantity(inventory.getAvailableQuantity() + reservation.getQuantity());
+        inventory.setReservedQuantity(inventory.getReservedQuantity() - reservation.getQuantity());
+
+        reservation.setStatus(ReservationStatus.EXPIRED);
+    }
+
 }

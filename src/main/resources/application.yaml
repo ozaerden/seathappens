@@ -28,3 +28,4 @@ springdoc:
 seathappens:
   reservation:
     duration-minutes: 10
+    expiry-scheduler-fixed-rate-ms: 30000
