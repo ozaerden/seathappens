@@ -13,6 +13,7 @@ import com.seathappens.payment.dto.response.PaymentResponse;
 import com.seathappens.payment.entity.Payment;
 import com.seathappens.payment.entity.PaymentStatus;
 import com.seathappens.payment.repository.PaymentRepository;
+import com.seathappens.ticket.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,7 @@ public class PaymentService {
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
     private final InventoryRepository inventoryRepository;
+    private final TicketService ticketService;
 
     @Transactional
     public PaymentResponse processPayment(ProcessPaymentRequest request) {
@@ -47,21 +49,16 @@ public class PaymentService {
                 .build();
 
         if (request.success()) {
-            Inventory inventory = inventoryRepository.findByTicketTypeId(
-                            order.getReservation().getTicketType().getId()
-                    )
+            Inventory inventory = inventoryRepository.findByTicketTypeId(order.getReservation().getTicketType().getId())
                     .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.INVENTORY_NOT_FOUND));
 
             payment.setStatus(PaymentStatus.SUCCESS);
             order.setStatus(OrderStatus.PAID);
 
-            inventory.setReservedQuantity(
-                    inventory.getReservedQuantity() - order.getReservation().getQuantity()
-            );
+            inventory.setReservedQuantity(inventory.getReservedQuantity() - order.getReservation().getQuantity());
+            inventory.setSoldQuantity(inventory.getSoldQuantity() + order.getReservation().getQuantity());
 
-            inventory.setSoldQuantity(
-                    inventory.getSoldQuantity() + order.getReservation().getQuantity()
-            );
+            ticketService.issueTickets(order);
         } else {
             payment.setStatus(PaymentStatus.FAILED);
         }

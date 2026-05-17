@@ -16,6 +16,8 @@ public enum ErrorCode {
     PAYMENT_NOT_FOUND("PAYMENT_NOT_FOUND", "Payment not found"),
     ORDER_ALREADY_PAID("ORDER_ALREADY_PAID", "Order already paid"),
     ORDER_NOT_PAYABLE("ORDER_NOT_PAYABLE", "Order is not payable"),
+    TICKET_NOT_FOUND("TICKET_NOT_FOUND", "Ticket not found"),
+    TICKET_ALREADY_ISSUED("TICKET_ALREADY_ISSUED", "Ticket already issued for this order"),
     VALIDATION_FAILED("VALIDATION_FAILED", "Validation failed"),
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", "Unexpected server error");
 
