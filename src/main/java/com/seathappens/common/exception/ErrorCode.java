@@ -13,6 +13,9 @@ public enum ErrorCode {
     CONCURRENT_MODIFICATION("CONCURRENT_MODIFICATION", "Resource was modified by another transaction. Please retry."),
     ORDER_NOT_FOUND("ORDER_NOT_FOUND", "Order not found"),
     RESERVATION_ALREADY_CONVERTED("RESERVATION_ALREADY_CONVERTED", "Reservation already converted"),
+    PAYMENT_NOT_FOUND("PAYMENT_NOT_FOUND", "Payment not found"),
+    ORDER_ALREADY_PAID("ORDER_ALREADY_PAID", "Order already paid"),
+    ORDER_NOT_PAYABLE("ORDER_NOT_PAYABLE", "Order is not payable"),
     VALIDATION_FAILED("VALIDATION_FAILED", "Validation failed"),
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", "Unexpected server error");
 
