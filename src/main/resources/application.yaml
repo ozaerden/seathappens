@@ -18,6 +18,17 @@ spring:
   flyway:
     enabled: true
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: seathappens-local-consumer
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
 server:
   port: 8080
 
@@ -26,6 +37,10 @@ springdoc:
     path: /swagger-ui.html
 
 seathappens:
+  outbox:
+    publisher-fixed-rate-ms: 10000
+    topic-name: seathappens.events
+
   reservation:
     duration-minutes: 10
     expiry-scheduler-fixed-rate-ms: 30000
