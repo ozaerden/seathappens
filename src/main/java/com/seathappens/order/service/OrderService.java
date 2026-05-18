@@ -35,11 +35,11 @@ public class OrderService {
         Reservation reservation = reservationRepository.findById(request.reservationId())
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESERVATION_NOT_FOUND));
 
-        if (reservation.getStatus() == ReservationStatus.CONVERTED) {
+        if (ReservationStatus.CONVERTED.equals(reservation.getStatus())) {
             throw new BusinessException(ErrorCode.RESERVATION_ALREADY_CONVERTED);
         }
 
-        if (reservation.getStatus() != ReservationStatus.ACTIVE) {
+        if (!ReservationStatus.ACTIVE.equals(reservation.getStatus())) {
             throw new BusinessException(ErrorCode.RESERVATION_NOT_ACTIVE);
         }
 

@@ -40,3 +40,16 @@ Venue
                     -> Order
                         -> Payment
                             -> Ticket
+
+# Next Phase
+
+Planned improvements:
+
+- Outbox Pattern
+- Kafka Integration
+- Event Publishing
+- Notification Service
+- Email Simulation
+- QR Code Generation
+- Authentication & Authorization
+- Distributed Architecture

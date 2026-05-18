@@ -101,7 +101,7 @@ class ReservationConcurrencyTest {
         List<Reservation> activeReservations = reservationRepository.findAll()
                 .stream()
                 .filter(reservation -> reservation.getTicketType().getId().equals(ticketType.getId()))
-                .filter(reservation -> reservation.getStatus() == ReservationStatus.ACTIVE)
+                .filter(reservation -> ReservationStatus.ACTIVE.equals(reservation.getStatus()))
                 .toList();
 
         assertThat(activeReservations).hasSize(1);
