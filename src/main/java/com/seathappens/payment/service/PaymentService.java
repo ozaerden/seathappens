@@ -8,16 +8,19 @@ import com.seathappens.inventory.repository.InventoryRepository;
 import com.seathappens.order.entity.Order;
 import com.seathappens.order.entity.OrderStatus;
 import com.seathappens.order.repository.OrderRepository;
+import com.seathappens.outbox.service.OutboxEventService;
 import com.seathappens.payment.dto.request.ProcessPaymentRequest;
 import com.seathappens.payment.dto.response.PaymentResponse;
 import com.seathappens.payment.entity.Payment;
 import com.seathappens.payment.entity.PaymentStatus;
+import com.seathappens.payment.event.PaymentSucceededEvent;
 import com.seathappens.payment.repository.PaymentRepository;
 import com.seathappens.ticket.service.TicketService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,17 +32,18 @@ public class PaymentService {
     private final OrderRepository orderRepository;
     private final InventoryRepository inventoryRepository;
     private final TicketService ticketService;
+    private final OutboxEventService outboxEventService;
 
     @Transactional
     public PaymentResponse processPayment(ProcessPaymentRequest request) {
         Order order = orderRepository.findById(request.orderId())
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.ORDER_NOT_FOUND));
 
-        if (order.getStatus() == OrderStatus.PAID) {
+        if (OrderStatus.PAID.equals(order.getStatus())) {
             throw new BusinessException(ErrorCode.ORDER_ALREADY_PAID);
         }
 
-        if (order.getStatus() != OrderStatus.PENDING_PAYMENT) {
+        if (!OrderStatus.PENDING_PAYMENT.equals(order.getStatus())) {
             throw new BusinessException(ErrorCode.ORDER_NOT_PAYABLE);
         }
 
@@ -63,7 +67,23 @@ public class PaymentService {
             payment.setStatus(PaymentStatus.FAILED);
         }
 
-        return PaymentResponse.from(paymentRepository.save(payment));
+        Payment savedPayment = paymentRepository.save(payment);
+
+        if (PaymentStatus.SUCCESS.equals(savedPayment.getStatus())) {
+            outboxEventService.saveEvent(
+                    "Payment",
+                    savedPayment.getId().toString(),
+                    "PAYMENT_SUCCEEDED",
+                    new PaymentSucceededEvent(
+                            savedPayment.getId(),
+                            order.getId(),
+                            savedPayment.getAmount(),
+                            LocalDateTime.now()
+                    )
+            );
+        }
+
+        return PaymentResponse.from(savedPayment);
     }
 
     @Transactional(readOnly = true)

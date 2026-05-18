@@ -69,11 +69,11 @@ public class ReservationService {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESERVATION_NOT_FOUND));
 
-        if (reservation.getStatus() == ReservationStatus.CANCELLED) {
+        if (ReservationStatus.CANCELLED.equals(reservation.getStatus())) {
             throw new BusinessException(ErrorCode.RESERVATION_ALREADY_CANCELLED);
         }
 
-        if (reservation.getStatus() != ReservationStatus.ACTIVE) {
+        if (!ReservationStatus.ACTIVE.equals(reservation.getStatus())) {
             throw new BusinessException(ErrorCode.RESERVATION_NOT_ACTIVE);
         }
 

@@ -18,6 +18,7 @@ public enum ErrorCode {
     ORDER_NOT_PAYABLE("ORDER_NOT_PAYABLE", "Order is not payable"),
     TICKET_NOT_FOUND("TICKET_NOT_FOUND", "Ticket not found"),
     TICKET_ALREADY_ISSUED("TICKET_ALREADY_ISSUED", "Ticket already issued for this order"),
+    OUTBOX_SERIALIZATION_ERROR("OUTBOX_SERIALIZATION_ERROR", "Failed to serialize outbox event payload"),
     VALIDATION_FAILED("VALIDATION_FAILED", "Validation failed"),
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", "Unexpected server error");
 

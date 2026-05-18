@@ -71,6 +71,21 @@ public class GlobalExceptionHandler {
         return problemDetail;
     }
 
+    @ExceptionHandler(InfrastructureException.class)
+    public ProblemDetail handleInfrastructureException(InfrastructureException exception) {
+
+        log.error(exception.getErrorCode().message(), exception);
+
+        ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+
+        problemDetail.setTitle("Infrastructure Error");
+        problemDetail.setDetail(exception.getErrorCode().message());
+        problemDetail.setType(URI.create("/errors/infrastructure-error"));
+        problemDetail.setProperty("code", exception.getErrorCode().code());
+
+        return problemDetail;
+    }
+
     @ExceptionHandler({
             OptimisticLockException.class,
             ObjectOptimisticLockingFailureException.class
