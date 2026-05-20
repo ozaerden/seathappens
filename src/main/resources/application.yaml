@@ -49,3 +49,6 @@ seathappens:
 
   order:
     expiry-scheduler-fixed-rate-ms: 30000
+
+  notification:
+    default-recipient: customer@seathappens.local

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seathappens.common.exception.ErrorCode;
 import com.seathappens.common.exception.InfrastructureException;
+import com.seathappens.notification.service.NotificationService;
 import com.seathappens.outbox.config.OutboxProperties;
 import com.seathappens.outbox.entity.ProcessedKafkaEvent;
 import com.seathappens.outbox.event.OutboxMessage;
@@ -26,6 +27,7 @@ public class OutboxEventConsumer {
     private final ObjectMapper objectMapper;
     private final OutboxProperties outboxProperties;
     private final ProcessedKafkaEventRepository processedKafkaEventRepository;
+    private final NotificationService notificationService;
 
     @Transactional
     @KafkaListener(
@@ -50,6 +52,14 @@ public class OutboxEventConsumer {
                 outboxMessage.eventType(),
                 outboxMessage.payload()
         );
+
+        if ("PAYMENT_SUCCEEDED".equals(outboxMessage.eventType())) {
+            notificationService.createPaymentSucceededNotification(
+                    outboxMessage.eventId(),
+                    outboxMessage.eventType(),
+                    outboxMessage.payload()
+            );
+        }
 
         processedKafkaEventRepository.save(ProcessedKafkaEvent.builder()
                 .eventId(outboxMessage.eventId())
