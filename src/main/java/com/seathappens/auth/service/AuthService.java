@@ -1,10 +1,14 @@
 package com.seathappens.auth.service;
 
+import com.seathappens.auth.dto.request.LoginRequest;
 import com.seathappens.auth.dto.request.RegisterRequest;
 import com.seathappens.auth.dto.response.AuthResponse;
+import com.seathappens.auth.dto.response.LoginResponse;
 import com.seathappens.common.exception.BusinessException;
 import com.seathappens.common.exception.ErrorCode;
+import com.seathappens.security.service.JwtTokenService;
 import com.seathappens.user.entity.User;
+import com.seathappens.user.entity.UserStatus;
 import com.seathappens.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,8 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthService {
 
+    private static final String TOKEN_TYPE = "Bearer";
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtTokenService jwtTokenService;
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -37,4 +44,25 @@ public class AuthService {
         );
     }
 
+    @Transactional(readOnly = true)
+    public LoginResponse login(LoginRequest request) {
+        User user = userRepository.findByEmail(request.email())
+                .orElseThrow(() -> new BusinessException(ErrorCode.INVALID_CREDENTIALS));
+
+        if (!passwordEncoder.matches(request.password(), user.getPassword())) {
+            throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
+        }
+
+        if (!UserStatus.ACTIVE.equals(user.getStatus())) {
+            throw new BusinessException(ErrorCode.USER_NOT_ACTIVE);
+        }
+
+        String accessToken = jwtTokenService.generateToken(user);
+
+        return new LoginResponse(
+                accessToken,
+                TOKEN_TYPE,
+                jwtTokenService.expiresInSeconds()
+        );
+    }
 }

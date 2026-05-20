@@ -1,7 +1,9 @@
 package com.seathappens.auth.controller;
 
+import com.seathappens.auth.dto.request.LoginRequest;
 import com.seathappens.auth.dto.request.RegisterRequest;
 import com.seathappens.auth.dto.response.AuthResponse;
+import com.seathappens.auth.dto.response.LoginResponse;
 import com.seathappens.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -23,6 +25,12 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public AuthResponse register(@Valid @RequestBody RegisterRequest request) {
         return authService.register(request);
+    }
+
+    @Operation(summary = "Login user.")
+    @PostMapping(value = "/login", version = "1")
+    public LoginResponse login(@Valid @RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 
 }
