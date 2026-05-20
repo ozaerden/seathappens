@@ -1,8 +1,13 @@
 package com.seathappens.outbox.publisher;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.seathappens.common.exception.ErrorCode;
+import com.seathappens.common.exception.InfrastructureException;
 import com.seathappens.outbox.config.OutboxProperties;
 import com.seathappens.outbox.entity.OutboxEvent;
 import com.seathappens.outbox.entity.OutboxEventStatus;
+import com.seathappens.outbox.event.OutboxMessage;
 import com.seathappens.outbox.repository.OutboxEventRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +27,7 @@ public class OutboxEventPublisher {
     private final OutboxEventRepository outboxEventRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final OutboxProperties outboxProperties;
+    private final ObjectMapper objectMapper;
 
     @Scheduled(fixedRateString = "${seathappens.outbox.publisher-fixed-rate-ms}")
     @Transactional
@@ -40,10 +46,20 @@ public class OutboxEventPublisher {
 
     private void publish(OutboxEvent event) {
         try {
+            OutboxMessage outboxMessage = new OutboxMessage(
+                    event.getId(),
+                    event.getEventType(),
+                    event.getAggregateType(),
+                    event.getAggregateId(),
+                    event.getPayload()
+            );
+
+            String message = objectMapper.writeValueAsString(outboxMessage);
+
             kafkaTemplate.send(
                     outboxProperties.topicName(),
                     event.getAggregateId(),
-                    event.getPayload()
+                    message
             ).get();
 
             event.setStatus(OutboxEventStatus.PUBLISHED);
@@ -55,6 +71,12 @@ public class OutboxEventPublisher {
                     "Published outbox event. eventId={}, eventType={}",
                     event.getId(),
                     event.getEventType()
+            );
+
+        } catch (JsonProcessingException exception) {
+            throw new InfrastructureException(
+                    ErrorCode.OUTBOX_SERIALIZATION_ERROR,
+                    exception
             );
 
         } catch (Exception exception) {
