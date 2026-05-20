@@ -5,6 +5,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "seathappens.outbox")
 public record OutboxProperties(
         long publisherFixedRateMs,
-        String topicName
+        String topicName,
+        int maxRetryCount,
+        long retryDelayMs
 ) {
 }

@@ -27,7 +27,11 @@ public class OutboxEventPublisher {
     @Transactional
     public void publishPendingEvents() {
         List<OutboxEvent> pendingEvents = outboxEventRepository
-                .findTop50ByStatusOrderByCreatedAtAsc(OutboxEventStatus.PENDING);
+                .findTop50ByStatusAndNextRetryAtIsNullOrStatusAndNextRetryAtBeforeOrderByCreatedAtAsc(
+                        OutboxEventStatus.PENDING,
+                        OutboxEventStatus.PENDING,
+                        LocalDateTime.now()
+                );
 
         for (OutboxEvent event : pendingEvents) {
             publish(event);
@@ -44,6 +48,8 @@ public class OutboxEventPublisher {
 
             event.setStatus(OutboxEventStatus.PUBLISHED);
             event.setPublishedAt(LocalDateTime.now());
+            event.setLastError(null);
+            event.setNextRetryAt(null);
 
             log.info(
                     "Published outbox event. eventId={}, eventType={}",
@@ -52,15 +58,36 @@ public class OutboxEventPublisher {
             );
 
         } catch (Exception exception) {
-            event.setStatus(OutboxEventStatus.FAILED);
-            event.setRetryCount(event.getRetryCount() + 1);
+            int nextRetryCount = event.getRetryCount() + 1;
 
-            log.error(
-                    "Failed to publish outbox event. eventId={}, eventType={}",
-                    event.getId(),
-                    event.getEventType(),
-                    exception
-            );
+            event.setRetryCount(nextRetryCount);
+            event.setLastError(exception.getMessage());
+
+            if (nextRetryCount >= outboxProperties.maxRetryCount()) {
+                event.setStatus(OutboxEventStatus.FAILED);
+                event.setNextRetryAt(null);
+
+                log.error(
+                        "Outbox event permanently failed. eventId={}, eventType={}, retryCount={}",
+                        event.getId(),
+                        event.getEventType(),
+                        nextRetryCount,
+                        exception
+                );
+            } else {
+                event.setStatus(OutboxEventStatus.PENDING);
+                event.setNextRetryAt(
+                        LocalDateTime.now().plusNanos(outboxProperties.retryDelayMs() * 1_000_000)
+                );
+
+                log.warn(
+                        "Outbox event publish failed. Scheduled retry. eventId={}, eventType={}, retryCount={}",
+                        event.getId(),
+                        event.getEventType(),
+                        nextRetryCount,
+                        exception
+                );
+            }
         }
     }
 

@@ -4,10 +4,16 @@ import com.seathappens.outbox.entity.OutboxEvent;
 import com.seathappens.outbox.entity.OutboxEventStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
 public interface OutboxEventRepository extends JpaRepository<OutboxEvent, UUID> {
 
-    List<OutboxEvent> findTop50ByStatusOrderByCreatedAtAsc(OutboxEventStatus status);
+    List<OutboxEvent> findTop50ByStatusAndNextRetryAtIsNullOrStatusAndNextRetryAtBeforeOrderByCreatedAtAsc(
+            OutboxEventStatus statusWithoutRetryDate,
+            OutboxEventStatus statusWithRetryDate,
+            LocalDateTime now
+    );
+
 }

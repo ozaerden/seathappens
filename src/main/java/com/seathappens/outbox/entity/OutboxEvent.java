@@ -37,4 +37,9 @@ public class OutboxEvent extends BaseEntity {
     @Column(nullable = false)
     private Integer retryCount;
 
+    @Column(columnDefinition = "TEXT")
+    private String lastError;
+
+    private LocalDateTime nextRetryAt;
+
 }

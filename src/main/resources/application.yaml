@@ -40,6 +40,8 @@ seathappens:
   outbox:
     publisher-fixed-rate-ms: 10000
     topic-name: seathappens.events
+    max-retry-count: 5
+    retry-delay-ms: 30000
 
   reservation:
     duration-minutes: 10
