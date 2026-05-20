@@ -11,6 +11,8 @@ import com.seathappens.reservation.dto.response.ReservationResponse;
 import com.seathappens.reservation.entity.Reservation;
 import com.seathappens.reservation.entity.ReservationStatus;
 import com.seathappens.reservation.repository.ReservationRepository;
+import com.seathappens.security.service.CurrentUserService;
+import com.seathappens.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
     private final InventoryRepository inventoryRepository;
+    private final CurrentUserService currentUserService;
 
     private final ReservationProperties reservationProperties;
 
@@ -40,7 +43,10 @@ public class ReservationService {
         inventory.setAvailableQuantity(inventory.getAvailableQuantity() - request.quantity());
         inventory.setReservedQuantity(inventory.getReservedQuantity() + request.quantity());
 
+        User currentUser = currentUserService.getCurrentUser();
+
         Reservation reservation = Reservation.builder()
+                .user(currentUser)
                 .ticketType(inventory.getTicketType())
                 .quantity(request.quantity())
                 .expiresAt(LocalDateTime.now().plusMinutes(reservationProperties.durationMinutes()))

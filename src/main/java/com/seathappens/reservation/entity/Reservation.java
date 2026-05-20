@@ -2,6 +2,7 @@ package com.seathappens.reservation.entity;
 
 import com.seathappens.common.entity.BaseEntity;
 import com.seathappens.tickettype.entity.TicketType;
+import com.seathappens.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,5 +31,9 @@ public class Reservation extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private ReservationStatus status = ReservationStatus.ACTIVE;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 }

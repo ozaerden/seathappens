@@ -22,6 +22,7 @@ public enum ErrorCode {
     EMAIL_ALREADY_EXISTS("EMAIL_ALREADY_EXISTS", "Email already exists"),
     INVALID_CREDENTIALS("INVALID_CREDENTIALS", "Invalid email or password"),
     USER_NOT_ACTIVE("USER_NOT_ACTIVE", "User is not active"),
+    USER_NOT_FOUND("USER_NOT_FOUND", "User not found"),
     VALIDATION_FAILED("VALIDATION_FAILED", "Validation failed"),
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", "Unexpected server error");
 
