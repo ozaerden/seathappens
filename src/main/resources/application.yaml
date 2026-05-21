@@ -18,6 +18,11 @@ spring:
   flyway:
     enabled: true
 
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
   kafka:
     bootstrap-servers: localhost:9092
     producer:
@@ -56,4 +61,4 @@ seathappens:
   security:
     jwt:
       secret: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
-      expiration-minutes: 60
+      expiration-minutes: 15

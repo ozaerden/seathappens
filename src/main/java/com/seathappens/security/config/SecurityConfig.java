@@ -1,5 +1,6 @@
 package com.seathappens.security.config;
 
+import com.seathappens.security.filter.ActiveTokenFilter;
 import com.seathappens.security.service.JwtAuthorityConverter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +9,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -15,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     private final JwtAuthorityConverter jwtAuthorityConverter;
+    private final ActiveTokenFilter activeTokenFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) {
@@ -56,7 +59,7 @@ public class SecurityConfig {
                                 jwt.jwtAuthenticationConverter(authenticationConverter)
                         )
                 )
+                .addFilterAfter(activeTokenFilter, BearerTokenAuthenticationFilter.class)
                 .build();
     }
-
 }

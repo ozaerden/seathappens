@@ -6,7 +6,9 @@ import com.seathappens.auth.dto.response.AuthResponse;
 import com.seathappens.auth.dto.response.LoginResponse;
 import com.seathappens.common.exception.BusinessException;
 import com.seathappens.common.exception.ErrorCode;
+import com.seathappens.security.service.GeneratedToken;
 import com.seathappens.security.service.JwtTokenService;
+import com.seathappens.security.service.TokenStoreService;
 import com.seathappens.user.entity.User;
 import com.seathappens.user.entity.UserStatus;
 import com.seathappens.user.repository.UserRepository;
@@ -14,6 +16,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.Duration;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +28,7 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenService jwtTokenService;
+    private final TokenStoreService tokenStoreService;
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -57,12 +62,19 @@ public class AuthService {
             throw new BusinessException(ErrorCode.USER_NOT_ACTIVE);
         }
 
-        String accessToken = jwtTokenService.generateToken(user);
+        GeneratedToken generatedToken = jwtTokenService.generateToken(user);
+
+        tokenStoreService.storeToken(
+                user.getId(),
+                generatedToken.jti(),
+                Duration.ofSeconds(generatedToken.expiresInSeconds())
+        );
 
         return new LoginResponse(
-                accessToken,
+                generatedToken.accessToken(),
                 TOKEN_TYPE,
-                jwtTokenService.expiresInSeconds()
+                generatedToken.expiresInSeconds()
         );
     }
+
 }

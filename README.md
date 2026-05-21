@@ -26,23 +26,50 @@ The project focuses on learning and applying real-world backend engineering conc
 - Hibernate
 - Maven
 - Swagger / OpenAPI
+- Spring Security
+- OAuth2 Resource Server
+- JWT
+- Redis
+- Kafka
+- Kafka UI
 
 ---
 
-# Current Flow
+# Application Flow
 
 ```text
 Venue
     -> Event
         -> TicketType
             -> Inventory
-                -> Reservation
-                    -> Order
-                        -> Payment
-                            -> Ticket
+                -> Authenticated User
+                    -> Reservation
+                        -> Order
+                            -> Payment
+                                -> Ticket
+                                    -> Ticket Ownership
 ```
 
 # Features
+
+### Authentication & Authorization
+
+ - User registration
+ - User login
+ - BCrypt password hashing
+ - JWT-based authentication
+ - Role-based authorization
+ - CUSTOMER and ADMIN roles
+ - Protected API endpoints
+ - User deactivation
+
+### Token Management
+
+ - JWT access token generation
+ - JWT `jti` claim usage
+ - Redis-backed active token storage
+ - Token revocation on user deactivation
+ - Stateless authentication with server-side revocation support
 
 ### Venue Management
  - Create venue
@@ -159,7 +186,12 @@ The project currently demonstrates:
 # Local Development
 Start Infrastructure by `docker compose up -d`
 
-Infrastructure includes PostgreSQL, Kafka and Kafka UI.
+Infrastructure includes:
+
+- PostgreSQL
+- Kafka
+- Kafka UI
+- Redis
 
 Kafka UI: http://localhost:8085
 
@@ -177,12 +209,8 @@ Migration files are located under: `src/main/resources/db/migration`
 
 Planned improvements:
 
- - Spring Security
- - JWT Authentication
- - User & Role Management
- - Ticket Ownership
- - Authorization Rules
- - Redis Integration
+ - Refresh token flow
+ - Logout endpoint
  - Email Simulation
  - QR Code Generation
  - ELK / Observability
@@ -190,3 +218,9 @@ Planned improvements:
  - Distributed Microservice Architecture
  - Kubernetes Deployment
  - CI/CD Pipelines
+ - API Gateway
+ - Reactive programming
+ - Mono / Flux
+ - Rate limiter
+ - Circuit breaker
+ - Token validation at gateway layer

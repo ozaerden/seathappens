@@ -3,6 +3,7 @@ package com.seathappens.user.service;
 import com.seathappens.common.exception.BusinessException;
 import com.seathappens.common.exception.ErrorCode;
 import com.seathappens.common.exception.ResourceNotFoundException;
+import com.seathappens.security.service.TokenStoreService;
 import com.seathappens.user.entity.User;
 import com.seathappens.user.entity.UserStatus;
 import com.seathappens.user.repository.UserRepository;
@@ -17,6 +18,7 @@ import java.util.UUID;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final TokenStoreService tokenStoreService;
 
     @Transactional
     public void deactivateUser(UUID id) {
@@ -28,6 +30,7 @@ public class UserService {
         }
 
         user.setStatus(UserStatus.INACTIVE);
+        tokenStoreService.revokeTokensByUserId(user.getId());
     }
 
 }
