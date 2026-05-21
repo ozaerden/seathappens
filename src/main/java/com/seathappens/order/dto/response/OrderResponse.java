@@ -9,6 +9,7 @@ import java.util.UUID;
 
 public record OrderResponse(
         UUID id,
+        UUID userId,
         UUID reservationId,
         BigDecimal totalAmount,
         OrderStatus status,
@@ -19,6 +20,7 @@ public record OrderResponse(
     public static OrderResponse from(Order order) {
         return new OrderResponse(
                 order.getId(),
+                order.getUser().getId(),
                 order.getReservation().getId(),
                 order.getTotalAmount(),
                 order.getStatus(),

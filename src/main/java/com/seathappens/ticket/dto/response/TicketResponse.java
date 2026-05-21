@@ -8,6 +8,7 @@ import java.util.UUID;
 
 public record TicketResponse(
         UUID id,
+        UUID userId,
         UUID orderId,
         UUID ticketTypeId,
         String ticketCode,
@@ -19,6 +20,7 @@ public record TicketResponse(
     public static TicketResponse from(Ticket ticket) {
         return new TicketResponse(
                 ticket.getId(),
+                ticket.getUser().getId(),
                 ticket.getOrder().getId(),
                 ticket.getTicketType().getId(),
                 ticket.getTicketCode(),

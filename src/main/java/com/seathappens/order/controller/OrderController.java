@@ -40,4 +40,10 @@ public class OrderController {
         return orderService.getOrders();
     }
 
+    @Operation(summary = "List my orders.")
+    @GetMapping(value = "/my", version = "1")
+    public List<OrderResponse> getMyOrders() {
+        return orderService.getMyOrders();
+    }
+
 }

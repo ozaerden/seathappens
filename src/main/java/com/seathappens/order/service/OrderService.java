@@ -13,6 +13,8 @@ import com.seathappens.order.repository.OrderRepository;
 import com.seathappens.reservation.entity.Reservation;
 import com.seathappens.reservation.entity.ReservationStatus;
 import com.seathappens.reservation.repository.ReservationRepository;
+import com.seathappens.security.service.CurrentUserService;
+import com.seathappens.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +31,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final ReservationRepository reservationRepository;
     private final InventoryRepository inventoryRepository;
+    private final CurrentUserService currentUserService;
 
     @Transactional
     public OrderResponse createOrder(CreateOrderRequest request) {
@@ -43,11 +46,18 @@ public class OrderService {
             throw new BusinessException(ErrorCode.RESERVATION_NOT_ACTIVE);
         }
 
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (!reservation.getUser().getId().equals(currentUser.getId())) {
+            throw new BusinessException(ErrorCode.RESERVATION_NOT_OWNED_BY_USER);
+        }
+
         BigDecimal totalAmount = reservation.getTicketType()
                 .getPrice()
                 .multiply(BigDecimal.valueOf(reservation.getQuantity()));
 
         Order order = Order.builder()
+                .user(reservation.getUser())
                 .reservation(reservation)
                 .totalAmount(totalAmount)
                 .build();
@@ -98,6 +108,16 @@ public class OrderService {
 
         reservation.setStatus(ReservationStatus.EXPIRED);
         order.setStatus(OrderStatus.EXPIRED);
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getMyOrders() {
+        User currentUser = currentUserService.getCurrentUser();
+
+        return orderRepository.findByUserId(currentUser.getId())
+                .stream()
+                .map(OrderResponse::from)
+                .toList();
     }
     
 }

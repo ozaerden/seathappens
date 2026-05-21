@@ -36,4 +36,10 @@ public class TicketController {
         return ticketService.getTicketsByOrderId(orderId);
     }
 
+    @Operation(summary = "List my tickets.")
+    @GetMapping(value = "/my", version = "1")
+    public List<TicketResponse> getMyTickets() {
+        return ticketService.getMyTickets();
+    }
+
 }

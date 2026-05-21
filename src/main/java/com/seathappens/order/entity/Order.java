@@ -2,6 +2,7 @@ package com.seathappens.order.entity;
 
 import com.seathappens.common.entity.BaseEntity;
 import com.seathappens.reservation.entity.Reservation;
+import com.seathappens.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,5 +28,9 @@ public class Order extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private OrderStatus status = OrderStatus.PENDING_PAYMENT;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 }

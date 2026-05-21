@@ -3,6 +3,7 @@ package com.seathappens.ticket.entity;
 import com.seathappens.common.entity.BaseEntity;
 import com.seathappens.order.entity.Order;
 import com.seathappens.tickettype.entity.TicketType;
+import com.seathappens.user.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -30,5 +31,9 @@ public class Ticket extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private TicketStatus status = TicketStatus.ISSUED;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 }

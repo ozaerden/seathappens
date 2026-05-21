@@ -5,9 +5,11 @@ import com.seathappens.common.exception.ErrorCode;
 import com.seathappens.common.exception.ResourceNotFoundException;
 import com.seathappens.order.entity.Order;
 import com.seathappens.order.repository.OrderRepository;
+import com.seathappens.security.service.CurrentUserService;
 import com.seathappens.ticket.dto.response.TicketResponse;
 import com.seathappens.ticket.entity.Ticket;
 import com.seathappens.ticket.repository.TicketRepository;
+import com.seathappens.user.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +25,7 @@ public class TicketService {
     private final TicketRepository ticketRepository;
     private final OrderRepository orderRepository;
     private final TicketCodeGenerator ticketCodeGenerator;
+    private final CurrentUserService currentUserService;
 
     @Transactional
     public void issueTickets(Order order) {
@@ -36,6 +39,7 @@ public class TicketService {
 
         for (int i = 0; i < quantity; i++) {
             Ticket ticket = Ticket.builder()
+                    .user(order.getUser())
                     .order(order)
                     .ticketType(order.getReservation().getTicketType())
                     .ticketCode(ticketCodeGenerator.generate())
@@ -69,6 +73,16 @@ public class TicketService {
         }
 
         return ticketRepository.findByOrderId(orderId)
+                .stream()
+                .map(TicketResponse::from)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<TicketResponse> getMyTickets() {
+        User currentUser = currentUserService.getCurrentUser();
+
+        return ticketRepository.findByUserId(currentUser.getId())
                 .stream()
                 .map(TicketResponse::from)
                 .toList();
