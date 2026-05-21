@@ -24,6 +24,7 @@ public enum ErrorCode {
     USER_NOT_ACTIVE("USER_NOT_ACTIVE", "User is not active"),
     USER_NOT_FOUND("USER_NOT_FOUND", "User not found"),
     RESERVATION_NOT_OWNED_BY_USER("RESERVATION_NOT_OWNED_BY_USER", "Reservation does not belong to current user"),
+    USER_ALREADY_INACTIVE("USER_ALREADY_INACTIVE", "User is already inactive"),
     VALIDATION_FAILED("VALIDATION_FAILED", "Validation failed"),
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", "Unexpected server error");
 

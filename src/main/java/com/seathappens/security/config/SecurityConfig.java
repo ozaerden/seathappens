@@ -38,7 +38,8 @@ public class SecurityConfig {
                                 "/api/venues/**",
                                 "/api/events/**",
                                 "/api/ticket-types/**",
-                                "/api/inventories/**"
+                                "/api/inventories/**",
+                                "/api/users/**"
                         ).hasRole("ADMIN")
 
                         .requestMatchers(
