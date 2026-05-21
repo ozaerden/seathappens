@@ -183,6 +183,29 @@ The project currently demonstrates:
 - Asynchronous processing
 - Event-driven communication
 
+# Redis Usage
+
+Redis is used for active JWT token tracking and token revocation.
+
+`docker exec -it seathappens-redis redis-cli keys '*'`
+
+When a user logs in:
+
+```text
+JWT is generated
+JWT jti is stored in Redis
+active-token:{jti} -> userId
+user-tokens:{userId} -> list of active token ids
+```
+
+When a user is deactivated:
+
+```text
+All active tokens of the user are removed from Redis
+Existing JWTs become invalid immediately
+```
+This allows the application to keep JWT authentication mostly stateless while still supporting immediate token revocation.
+
 # Local Development
 Start Infrastructure by `docker compose up -d`
 
@@ -210,7 +233,6 @@ Migration files are located under: `src/main/resources/db/migration`
 Planned improvements:
 
  - Refresh token flow
- - Logout endpoint
  - Email Simulation
  - QR Code Generation
  - ELK / Observability

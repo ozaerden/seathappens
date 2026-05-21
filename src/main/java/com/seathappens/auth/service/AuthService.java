@@ -13,7 +13,10 @@ import com.seathappens.user.entity.User;
 import com.seathappens.user.entity.UserStatus;
 import com.seathappens.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -75,6 +78,23 @@ public class AuthService {
                 TOKEN_TYPE,
                 generatedToken.expiresInSeconds()
         );
+    }
+
+    @Transactional
+    public void logout() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !(authentication.getPrincipal() instanceof Jwt jwt)) {
+            throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
+        }
+
+        String jti = jwt.getId();
+
+        if (jti == null || jti.isBlank()) {
+            throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
+        }
+
+        tokenStoreService.revokeToken(jti);
     }
 
 }

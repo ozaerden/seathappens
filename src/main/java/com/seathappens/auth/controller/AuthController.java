@@ -33,4 +33,11 @@ public class AuthController {
         return authService.login(request);
     }
 
+    @Operation(summary = "Logout user.")
+    @PostMapping(value = "/logout", version = "1")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void logout() {
+        authService.logout();
+    }
+
 }

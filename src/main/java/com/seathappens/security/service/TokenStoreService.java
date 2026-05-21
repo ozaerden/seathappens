@@ -30,6 +30,10 @@ public class TokenStoreService {
         return Boolean.TRUE.equals(redisTemplate.hasKey(activeTokenKey(jti)));
     }
 
+    public void revokeToken(String jti) {
+        redisTemplate.delete(activeTokenKey(jti));
+    }
+
     public void revokeTokensByUserId(UUID userId) {
         String userTokensKey = userTokensKey(userId);
 
