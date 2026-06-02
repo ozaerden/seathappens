@@ -1,0 +1,250 @@
+# DECISIONS.md
+
+## Decision: Modular Monolith
+
+Chosen:
+
+```text
+Modular Monolith
+```
+
+Instead of:
+
+```text
+Microservices
+```
+
+Reason:
+
+The goal is to learn business architecture first and distribute later. The current codebase should remain simple enough to run locally while still preserving clear module boundaries.
+
+## Decision: PostgreSQL
+
+Chosen:
+
+```text
+PostgreSQL
+```
+
+Reason:
+
+- transactional consistency
+- optimistic locking support
+- production-ready relational model
+- strong fit for order, payment, reservation, and inventory consistency
+
+## Decision: Flyway
+
+Chosen:
+
+```text
+Flyway
+```
+
+Reason:
+
+- schema versioning
+- reproducible environments
+- explicit database evolution
+- compatibility with `ddl-auto: validate`
+
+## Decision: Outbox Pattern
+
+Chosen:
+
+```text
+Outbox Pattern
+```
+
+Reason:
+
+Kafka publishing must not break business transactions. Business services write durable outbox rows in the same transaction as domain changes. A scheduler publishes those rows asynchronously.
+
+Benefits:
+
+- reliability
+- retry support
+- recovery support
+- transactional consistency
+
+## Decision: Kafka
+
+Chosen:
+
+```text
+Kafka
+```
+
+Reason:
+
+Practice:
+
+- event-driven architecture
+- asynchronous communication
+- producer-consumer model
+- consumer groups
+- offsets
+- retry handling
+- at-least-once delivery
+
+## Decision: Envelope Events
+
+Chosen structure:
+
+```json
+{
+  "eventId": "...",
+  "eventType": "...",
+  "aggregateType": "...",
+  "aggregateId": "...",
+  "payload": "..."
+}
+```
+
+Reason:
+
+Consumers can process generic event metadata without needing to know the original database row. The actual domain payload remains inside `payload`.
+
+## Decision: Idempotent Consumer
+
+Chosen:
+
+```text
+processed_kafka_events table
+```
+
+Reason:
+
+Kafka provides at-least-once delivery. Duplicate messages must be safely ignored.
+
+The notification flow also checks existing notifications by event id.
+
+## Decision: JWT Authentication
+
+Chosen:
+
+```text
+JWT Access Tokens
+```
+
+Reason:
+
+- stateless authentication
+- industry standard
+- gateway compatible
+- easy role propagation through token claims
+
+## Decision: Redis-backed Revocation
+
+Chosen:
+
+```text
+JWT + Redis
+```
+
+Instead of:
+
+```text
+Pure stateless JWT
+```
+
+Reason:
+
+Immediate logout and user deactivation support are required. Pure stateless JWT would remain valid until expiration.
+
+## Decision: Role-Based Authorization
+
+Roles:
+
+- `ADMIN`
+- `CUSTOMER`
+
+Reason:
+
+Simple and scalable authorization model for the current learning phase.
+
+## Decision: Immediate User Deactivation
+
+Chosen:
+
+```text
+Deactivate user + revoke all active tokens
+```
+
+Reason:
+
+A deactivated user must lose access immediately.
+
+Implementation:
+
+- set user status to `INACTIVE`
+- remove active token keys from Redis
+- remove the user's token set from Redis
+
+## Decision: Current Notification Strategy
+
+Chosen:
+
+```text
+Database persistence
+```
+
+Instead of:
+
+```text
+Real email integration
+```
+
+Reason:
+
+Focus on event-driven flow first.
+
+Future:
+
+- simulated email sender
+- status transitions
+- retry support
+- external email provider integration
+
+## Decision: Refresh Tokens
+
+Current status:
+
+```text
+Planned, not implemented
+```
+
+Reason:
+
+The current access-token-only flow was sufficient for the first security learning phase. Refresh token flow is the next security enhancement.
+
+Open design questions:
+
+- opaque refresh token or JWT refresh token
+- refresh token rotation or static refresh token until expiry
+- single-session logout or all-session logout
+- Redis key model for refresh tokens
+
+## Known Technical Debt
+
+1. Refresh token flow missing.
+2. Correlation id not implemented.
+3. Centralized audit logging not implemented.
+4. ELK integration not implemented.
+5. API Gateway not implemented.
+6. Request/response tracing not implemented.
+7. Notification delivery simulation only.
+8. No distributed deployment strategy yet.
+9. Direct resource ownership checks should be reviewed for orders and tickets.
+
+## Known Non-Issues
+
+The following are intentional:
+
+- modular monolith architecture
+- Flyway migration editing during local learning
+- notification persistence without actual delivery
+- Redis token revocation approach
+- Kafka consumer idempotency table
+- keeping microservice extraction as a future step
+
