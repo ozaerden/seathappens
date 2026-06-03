@@ -243,7 +243,7 @@ Prefer focused unit tests before broader integration tests. Use integration test
 
 ### Current Known Follow-up
 
-Refresh token support, order ownership, ticket ownership, QR generation, and ticket validation exist. The next practical follow-ups are:
+Refresh token support, reservation/order/payment/ticket ownership, QR generation, and ticket validation exist. The next practical follow-ups are:
 
 - Evolve notification delivery beyond database persistence.
 - Decide whether logout should revoke only the current session or all sessions.

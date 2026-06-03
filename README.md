@@ -102,6 +102,7 @@ Inventory consistency is protected with optimistic locking.
 - Reserve tickets
 - Reservation expiration
 - Reservation cancellation
+- Reservation ownership protection
 - Prevent overselling
 - Optimistic locking support
 
@@ -119,6 +120,7 @@ Order lifecycle: PENDING_PAYMENT -> PAID -> EXPIRED
 
 - Simulated payment processing
 - Payment success/failure flows
+- Payment ownership protection
 - Inventory finalization
 - Kafka event publishing
 - Outbox pattern integration

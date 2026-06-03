@@ -7,6 +7,7 @@ public enum ErrorCode {
     TICKET_TYPE_NOT_FOUND("TICKET_TYPE_NOT_FOUND", "Ticket type not found"),
     INVENTORY_NOT_FOUND("INVENTORY_NOT_FOUND", "Inventory not found"),
     RESERVATION_NOT_FOUND("RESERVATION_NOT_FOUND", "Reservation not found"),
+    RESERVATION_NOT_OWNED_BY_USER("RESERVATION_NOT_OWNED_BY_USER", "Reservation does not belong to current user"),
     INSUFFICIENT_INVENTORY("INSUFFICIENT_INVENTORY", "Insufficient inventory"),
     RESERVATION_ALREADY_CANCELLED("RESERVATION_ALREADY_CANCELLED", "Reservation is already cancelled"),
     RESERVATION_NOT_ACTIVE("RESERVATION_NOT_ACTIVE", "Reservation is not active"),
@@ -15,6 +16,7 @@ public enum ErrorCode {
     ORDER_NOT_OWNED_BY_USER("ORDER_NOT_OWNED_BY_USER", "Order does not belong to current user"),
     RESERVATION_ALREADY_CONVERTED("RESERVATION_ALREADY_CONVERTED", "Reservation already converted"),
     PAYMENT_NOT_FOUND("PAYMENT_NOT_FOUND", "Payment not found"),
+    PAYMENT_NOT_OWNED_BY_USER("PAYMENT_NOT_OWNED_BY_USER", "Payment does not belong to current user"),
     ORDER_ALREADY_PAID("ORDER_ALREADY_PAID", "Order already paid"),
     ORDER_NOT_PAYABLE("ORDER_NOT_PAYABLE", "Order is not payable"),
     TICKET_NOT_FOUND("TICKET_NOT_FOUND", "Ticket not found"),
@@ -29,7 +31,6 @@ public enum ErrorCode {
     INVALID_REFRESH_TOKEN("INVALID_REFRESH_TOKEN", "Invalid refresh token"),
     USER_NOT_ACTIVE("USER_NOT_ACTIVE", "User is not active"),
     USER_NOT_FOUND("USER_NOT_FOUND", "User not found"),
-    RESERVATION_NOT_OWNED_BY_USER("RESERVATION_NOT_OWNED_BY_USER", "Reservation does not belong to current user"),
     USER_ALREADY_INACTIVE("USER_ALREADY_INACTIVE", "User is already inactive"),
     VALIDATION_FAILED("VALIDATION_FAILED", "Validation failed"),
     INTERNAL_SERVER_ERROR("INTERNAL_SERVER_ERROR", "Unexpected server error");

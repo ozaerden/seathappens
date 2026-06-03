@@ -15,4 +15,6 @@ public interface ReservationRepository extends JpaRepository<Reservation, UUID> 
             LocalDateTime expiresAt
     );
 
+    List<Reservation> findByUserId(UUID userId);
+
 }

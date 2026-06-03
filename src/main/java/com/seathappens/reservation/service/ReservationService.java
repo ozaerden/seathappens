@@ -13,6 +13,7 @@ import com.seathappens.reservation.entity.ReservationStatus;
 import com.seathappens.reservation.repository.ReservationRepository;
 import com.seathappens.security.service.CurrentUserService;
 import com.seathappens.user.entity.User;
+import com.seathappens.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -57,13 +58,25 @@ public class ReservationService {
 
     @Transactional(readOnly = true)
     public ReservationResponse getReservationById(UUID id) {
-        return reservationRepository.findById(id)
-                .map(ReservationResponse::from)
+        Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESERVATION_NOT_FOUND));
+
+        validateReservationVisibleToCurrentUser(reservation);
+
+        return ReservationResponse.from(reservation);
     }
 
     @Transactional(readOnly = true)
     public List<ReservationResponse> getReservations() {
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (!UserRole.ADMIN.equals(currentUser.getRole())) {
+            return reservationRepository.findByUserId(currentUser.getId())
+                    .stream()
+                    .map(ReservationResponse::from)
+                    .toList();
+        }
+
         return reservationRepository.findAll()
                 .stream()
                 .map(ReservationResponse::from)
@@ -74,6 +87,8 @@ public class ReservationService {
     public ReservationResponse cancelReservation(UUID id) {
         Reservation reservation = reservationRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.RESERVATION_NOT_FOUND));
+
+        validateReservationVisibleToCurrentUser(reservation);
 
         if (ReservationStatus.CANCELLED.equals(reservation.getStatus())) {
             throw new BusinessException(ErrorCode.RESERVATION_ALREADY_CANCELLED);
@@ -114,6 +129,18 @@ public class ReservationService {
         inventory.setReservedQuantity(inventory.getReservedQuantity() - reservation.getQuantity());
 
         reservation.setStatus(ReservationStatus.EXPIRED);
+    }
+
+    private void validateReservationVisibleToCurrentUser(Reservation reservation) {
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (UserRole.ADMIN.equals(currentUser.getRole())) {
+            return;
+        }
+
+        if (!reservation.getUser().getId().equals(currentUser.getId())) {
+            throw new BusinessException(ErrorCode.RESERVATION_NOT_OWNED_BY_USER);
+        }
     }
 
 }

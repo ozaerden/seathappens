@@ -46,7 +46,9 @@
 
 ### Authorization
 
+- Reservation ownership protection
 - Order ownership protection
+- Payment ownership protection
 - Ticket ownership protection
 - Admin backoffice visibility for orders and tickets
 

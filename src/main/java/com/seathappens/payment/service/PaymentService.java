@@ -15,7 +15,10 @@ import com.seathappens.payment.entity.Payment;
 import com.seathappens.payment.entity.PaymentStatus;
 import com.seathappens.payment.event.PaymentSucceededEvent;
 import com.seathappens.payment.repository.PaymentRepository;
+import com.seathappens.security.service.CurrentUserService;
 import com.seathappens.ticket.service.TicketService;
+import com.seathappens.user.entity.User;
+import com.seathappens.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,11 +36,14 @@ public class PaymentService {
     private final InventoryRepository inventoryRepository;
     private final TicketService ticketService;
     private final OutboxEventService outboxEventService;
+    private final CurrentUserService currentUserService;
 
     @Transactional
     public PaymentResponse processPayment(ProcessPaymentRequest request) {
         Order order = orderRepository.findById(request.orderId())
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.ORDER_NOT_FOUND));
+
+        validateOrderVisibleToCurrentUser(order);
 
         if (OrderStatus.PAID.equals(order.getStatus())) {
             throw new BusinessException(ErrorCode.ORDER_ALREADY_PAID);
@@ -88,17 +94,45 @@ public class PaymentService {
 
     @Transactional(readOnly = true)
     public PaymentResponse getPaymentById(UUID id) {
-        return paymentRepository.findById(id)
-                .map(PaymentResponse::from)
+        Payment payment = paymentRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.PAYMENT_NOT_FOUND));
+
+        validatePaymentVisibleToCurrentUser(payment);
+
+        return PaymentResponse.from(payment);
     }
 
     @Transactional(readOnly = true)
     public List<PaymentResponse> getPayments() {
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (!UserRole.ADMIN.equals(currentUser.getRole())) {
+            return paymentRepository.findByOrderUserId(currentUser.getId())
+                    .stream()
+                    .map(PaymentResponse::from)
+                    .toList();
+        }
+
         return paymentRepository.findAll()
                 .stream()
                 .map(PaymentResponse::from)
                 .toList();
+    }
+
+    private void validatePaymentVisibleToCurrentUser(Payment payment) {
+        validateOrderVisibleToCurrentUser(payment.getOrder());
+    }
+
+    private void validateOrderVisibleToCurrentUser(Order order) {
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (UserRole.ADMIN.equals(currentUser.getRole())) {
+            return;
+        }
+
+        if (!order.getUser().getId().equals(currentUser.getId())) {
+            throw new BusinessException(ErrorCode.PAYMENT_NOT_OWNED_BY_USER);
+        }
     }
 
 }

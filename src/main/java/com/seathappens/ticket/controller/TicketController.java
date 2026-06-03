@@ -30,7 +30,7 @@ public class TicketController {
     }
 
     @Operation(summary = "Get ticket QR code.")
-    @GetMapping(value = "/{id}/qr-code", version = "1", produces = MediaType.IMAGE_PNG_VALUE)
+    @GetMapping(value = "/qr-code/{id}", version = "1", produces = MediaType.IMAGE_PNG_VALUE)
     public ResponseEntity<byte[]> getTicketQrCode(@PathVariable UUID id) {
         return ResponseEntity.ok()
                 .contentType(MediaType.IMAGE_PNG)
