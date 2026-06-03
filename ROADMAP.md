@@ -39,30 +39,12 @@
 - Logout endpoint
 - User deactivation
 - Immediate token invalidation
+- Refresh token flow
+- Refresh token rotation
 
 ## Current Priority
 
-### 1. Refresh Token Flow
-
-Status: not implemented.
-
-Goals:
-
-- Generate refresh token at login.
-- Store refresh token in Redis.
-- Add refresh endpoint.
-- Renew access tokens without requiring password login.
-- Define refresh token expiration policy.
-- Support refresh token revocation on logout and user deactivation.
-- Keep access tokens short-lived.
-
-Implementation notes to decide before coding:
-
-- Whether refresh tokens should be opaque random tokens or JWTs.
-- Whether refresh token rotation should be implemented immediately.
-- Whether logout should revoke only the current session or all user sessions.
-
-### 2. Ownership Expansion
+### 1. Ownership Expansion
 
 Extend authenticated-user ownership checks to:
 
@@ -75,7 +57,7 @@ Current state:
 - Order creation already checks that the reservation belongs to the current user.
 - `getMyOrders()` and `getMyTickets()` exist, but direct access by arbitrary id should be reviewed.
 
-### 3. Notification Evolution
+### 2. Notification Evolution
 
 Current state:
 
@@ -182,7 +164,6 @@ Potential targets:
 
 ## Known Technical Debt
 
-- Refresh token flow missing.
 - Correlation id not implemented.
 - Centralized audit logging not implemented.
 - ELK integration not implemented.
@@ -191,4 +172,3 @@ Potential targets:
 - Notification delivery is simulated by database persistence only.
 - No distributed deployment strategy yet.
 - Direct entity id access should be reviewed for ownership enforcement.
-

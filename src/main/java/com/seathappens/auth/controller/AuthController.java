@@ -1,6 +1,7 @@
 package com.seathappens.auth.controller;
 
 import com.seathappens.auth.dto.request.LoginRequest;
+import com.seathappens.auth.dto.request.RefreshTokenRequest;
 import com.seathappens.auth.dto.request.RegisterRequest;
 import com.seathappens.auth.dto.response.AuthResponse;
 import com.seathappens.auth.dto.response.LoginResponse;
@@ -31,6 +32,12 @@ public class AuthController {
     @PostMapping(value = "/login", version = "1")
     public LoginResponse login(@Valid @RequestBody LoginRequest request) {
         return authService.login(request);
+    }
+
+    @Operation(summary = "Refresh access token.")
+    @PostMapping(value = "/refresh", version = "1")
+    public LoginResponse refreshAccessToken(@Valid @RequestBody RefreshTokenRequest request) {
+        return authService.refreshAccessToken(request);
     }
 
     @Operation(summary = "Logout user.")

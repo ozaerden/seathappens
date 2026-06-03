@@ -160,7 +160,7 @@ active-token:{jti}
 user-tokens:{userId}
 ```
 
-Refresh tokens are not implemented yet and are the current roadmap priority.
+Refresh tokens are implemented with opaque random tokens stored in Redis.
 
 ### Outbox Pattern Rules
 
@@ -241,14 +241,10 @@ Business-critical flows should have tests:
 
 Prefer focused unit tests before broader integration tests. Use integration tests when transaction behavior, persistence, optimistic locking, Redis, Kafka, or Flyway behavior matters.
 
-### Next Known Feature
+### Current Known Follow-up
 
-The next planned feature is refresh token support:
+Refresh token support exists. The next security follow-ups are:
 
-- generate refresh token at login
-- store refresh token in Redis
-- add refresh endpoint
-- renew access token
-- define refresh token expiration policy
-- preserve immediate revocation behavior
-
+- Review ownership checks for direct order and ticket lookup endpoints.
+- Decide whether logout should revoke only the current session or all sessions.
+- Add deeper auth tests only when the user explicitly prioritizes tests.

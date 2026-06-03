@@ -21,6 +21,7 @@ public enum ErrorCode {
     OUTBOX_SERIALIZATION_ERROR("OUTBOX_SERIALIZATION_ERROR", "Failed to serialize outbox event payload"),
     EMAIL_ALREADY_EXISTS("EMAIL_ALREADY_EXISTS", "Email already exists"),
     INVALID_CREDENTIALS("INVALID_CREDENTIALS", "Invalid email or password"),
+    INVALID_REFRESH_TOKEN("INVALID_REFRESH_TOKEN", "Invalid refresh token"),
     USER_NOT_ACTIVE("USER_NOT_ACTIVE", "User is not active"),
     USER_NOT_FOUND("USER_NOT_FOUND", "User not found"),
     RESERVATION_NOT_OWNED_BY_USER("RESERVATION_NOT_OWNED_BY_USER", "Reservation does not belong to current user"),

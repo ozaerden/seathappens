@@ -211,31 +211,42 @@ Future:
 Current status:
 
 ```text
-Planned, not implemented
+Implemented
 ```
 
 Reason:
 
-The current access-token-only flow was sufficient for the first security learning phase. Refresh token flow is the next security enhancement.
+The access-token-only flow was sufficient for the first security learning phase. Refresh token flow was added as the next security enhancement.
+
+Chosen:
+
+```text
+Opaque random refresh tokens stored in Redis
+```
+
+Current behavior:
+
+- login returns access token and refresh token
+- refresh endpoint rotates refresh tokens
+- old refresh token is revoked after refresh
+- logout revokes the current access token and its linked refresh token
+- user deactivation revokes all known access and refresh tokens
 
 Open design questions:
 
-- opaque refresh token or JWT refresh token
-- refresh token rotation or static refresh token until expiry
 - single-session logout or all-session logout
-- Redis key model for refresh tokens
+- whether to add auth integration tests later
 
 ## Known Technical Debt
 
-1. Refresh token flow missing.
-2. Correlation id not implemented.
-3. Centralized audit logging not implemented.
-4. ELK integration not implemented.
-5. API Gateway not implemented.
-6. Request/response tracing not implemented.
-7. Notification delivery simulation only.
-8. No distributed deployment strategy yet.
-9. Direct resource ownership checks should be reviewed for orders and tickets.
+1. Correlation id not implemented.
+2. Centralized audit logging not implemented.
+3. ELK integration not implemented.
+4. API Gateway not implemented.
+5. Request/response tracing not implemented.
+6. Notification delivery simulation only.
+7. No distributed deployment strategy yet.
+8. Direct resource ownership checks should be reviewed for orders and tickets.
 
 ## Known Non-Issues
 
@@ -247,4 +258,3 @@ The following are intentional:
 - Redis token revocation approach
 - Kafka consumer idempotency table
 - keeping microservice extraction as a future step
-
