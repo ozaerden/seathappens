@@ -231,9 +231,9 @@ QR ticketing is implemented as a PNG QR code endpoint. Ticket validation is simu
 
 ### Notification
 
-Notifications are currently simulated by persisted database records.
+Notifications are persisted database records that can be delivered as SMTP emails.
 
-The Kafka consumer creates notification records for `PAYMENT_SUCCEEDED` events.
+The Kafka consumer creates notification records for `PAYMENT_SUCCEEDED` events. A separate notification email scheduler processes `CREATED` notifications, sends HTML email through `JavaMailSender`, attaches ticket QR PNG files, and moves notifications to `SENT` or eventually `FAILED` after retries.
 
 ## Persistence
 

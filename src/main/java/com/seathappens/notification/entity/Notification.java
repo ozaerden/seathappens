@@ -4,6 +4,7 @@ import com.seathappens.common.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -21,6 +22,8 @@ public class Notification extends BaseEntity {
     @Column(nullable = false, length = 100)
     private String eventType;
 
+    private UUID referenceId;
+
     @Column(nullable = false)
     private String recipient;
 
@@ -34,5 +37,14 @@ public class Notification extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 30)
     private NotificationStatus status = NotificationStatus.CREATED;
+
+    @Builder.Default
+    @Column(nullable = false)
+    private Integer retryCount = 0;
+
+    @Column(columnDefinition = "TEXT")
+    private String lastError;
+
+    private LocalDateTime nextRetryAt;
 
 }

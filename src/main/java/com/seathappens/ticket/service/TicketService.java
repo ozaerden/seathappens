@@ -1,11 +1,5 @@
 package com.seathappens.ticket.service;
 
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.google.zxing.client.j2se.MatrixToImageWriter;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
-import com.seathappens.common.exception.InfrastructureException;
 import com.seathappens.common.exception.BusinessException;
 import com.seathappens.common.exception.ErrorCode;
 import com.seathappens.common.exception.ResourceNotFoundException;
@@ -24,10 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -36,12 +26,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class TicketService {
 
-    private static final int QR_CODE_SIZE = 320;
-
     private final TicketRepository ticketRepository;
     private final OrderRepository orderRepository;
     private final TicketCodeGenerator ticketCodeGenerator;
     private final CurrentUserService currentUserService;
+    private final TicketQrCodeService ticketQrCodeService;
 
     @Transactional
     public void issueTickets(Order order) {
@@ -115,36 +104,7 @@ public class TicketService {
     public byte[] generateTicketQrCode(UUID id) {
         Ticket ticket = getVisibleTicket(id);
 
-        String qrPayload = """
-                {
-                  "ticketId": "%s",
-                  "ticketCode": "%s",
-                  "status": "%s"
-                }
-                """.formatted(
-                ticket.getId(),
-                ticket.getTicketCode(),
-                ticket.getStatus()
-        );
-
-        try {
-            QRCodeWriter qrCodeWriter = new QRCodeWriter();
-            BitMatrix bitMatrix = qrCodeWriter.encode(
-                    qrPayload,
-                    BarcodeFormat.QR_CODE,
-                    QR_CODE_SIZE,
-                    QR_CODE_SIZE
-            );
-
-            BufferedImage image = MatrixToImageWriter.toBufferedImage(bitMatrix);
-            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-
-            ImageIO.write(image, "png", outputStream);
-
-            return outputStream.toByteArray();
-        } catch (WriterException | IOException exception) {
-            throw new InfrastructureException(ErrorCode.TICKET_QR_GENERATION_ERROR, exception);
-        }
+        return ticketQrCodeService.generate(ticket);
     }
 
     @Transactional

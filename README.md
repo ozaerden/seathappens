@@ -32,6 +32,8 @@ The project focuses on learning and applying real-world backend engineering conc
 - Redis
 - Kafka
 - Kafka UI
+- JavaMailSender
+- Mailtrap SMTP
 
 ---
 
@@ -165,15 +167,27 @@ Payment Success
 
 # Notification Simulation
 
-Kafka consumers currently simulate downstream services by creating notification records.
+Kafka consumers create notification records and a scheduler sends email notifications when email delivery is enabled.
 
 This mimics real-world systems such as:
 
- - Email services
+- Email services
 - SMS services
 - Push notification systems
 - Slack/Discord integrations
 - Audit logging pipelines
+
+Payment success notifications can be delivered through SMTP with ticket QR PNG attachments.
+
+Email delivery is disabled by default. To use Mailtrap or another SMTP sandbox, provide SMTP settings through environment variables and enable notification email delivery:
+
+```text
+NOTIFICATION_EMAIL_ENABLED=true
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=<mailtrap-username>
+MAIL_PASSWORD=<mailtrap-password>
+```
 
 ---
 

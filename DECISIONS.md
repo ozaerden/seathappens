@@ -186,25 +186,28 @@ Implementation:
 Chosen:
 
 ```text
-Database persistence
+Database persistence + SMTP delivery
 ```
 
 Instead of:
 
 ```text
-Real email integration
+Database-only simulation
 ```
 
 Reason:
 
-Focus on event-driven flow first.
+The event-driven flow is now stable enough to practice real SMTP delivery with Mailtrap while keeping notification state durable.
 
-Future:
+Current behavior:
 
-- simulated email sender
-- status transitions
-- retry support
-- external email provider integration
+- Kafka consumer creates notification records.
+- Notification email scheduler sends `CREATED` notifications.
+- Email content is HTML.
+- Ticket QR PNG files are attached when tickets exist for the order.
+- Notifications move to `SENT` on success.
+- Notifications retry and eventually move to `FAILED` on repeated failures.
+- SMTP credentials are configured externally and are not hardcoded.
 
 ## Decision: Refresh Tokens
 
@@ -244,7 +247,7 @@ Open design questions:
 3. ELK integration not implemented.
 4. API Gateway not implemented.
 5. Request/response tracing not implemented.
-6. Notification delivery simulation only.
+6. Dedicated production email provider integration is not implemented yet.
 7. No distributed deployment strategy yet.
 8. A dedicated staff role for ticket scanning is not implemented yet.
 
@@ -254,7 +257,7 @@ The following are intentional:
 
 - modular monolith architecture
 - Flyway migration editing during local learning
-- notification persistence without actual delivery
+- notification persistence as the durable source for email delivery
 - Redis token revocation approach
 - Kafka consumer idempotency table
 - keeping microservice extraction as a future step

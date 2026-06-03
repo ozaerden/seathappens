@@ -29,6 +29,12 @@
 
 - Notification persistence
 - Kafka-driven notification creation
+- SMTP email delivery
+- Mailtrap-compatible configuration
+- HTML email content
+- Ticket QR PNG attachments
+- Notification status transitions
+- Notification email retry support
 
 ### Security
 
@@ -54,27 +60,13 @@
 
 ## Current Priority
 
-### 1. Notification Evolution
-
-Current state:
-
-- Notification records are persisted.
-- Kafka consumer creates notification records for `PAYMENT_SUCCEEDED`.
-
-Next:
-
-- Simulated email sender.
-- Notification status transitions.
-- Notification retry support.
-- Clear failure state for delivery simulation.
-
-## Near Future
-
-### Product Flow Polish
+### 1. Product Flow Polish
 
 - Decide whether customer-facing list-all endpoints should be renamed or hidden in favor of `/my`.
 - Add richer ticket validation response details if needed.
 - Consider a separate staff role for venue scanning instead of using `ADMIN`.
+
+## Near Future
 
 ### Audit & Observability
 
@@ -165,5 +157,4 @@ Potential targets:
 - ELK integration not implemented.
 - API Gateway not implemented.
 - Request/response tracing not implemented.
-- Notification delivery is simulated by database persistence only.
 - No distributed deployment strategy yet.
