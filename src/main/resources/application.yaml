@@ -69,7 +69,7 @@ seathappens:
 
   notification:
     default-recipient: customer@seathappens.local
-    from-email: no-reply@seathappens.local
+    from-email: no-reply@seathappens.com
     email-enabled: ${NOTIFICATION_EMAIL_ENABLED:false}
     email-scheduler-fixed-rate-ms: 15000
     email-max-retry-count: 3
