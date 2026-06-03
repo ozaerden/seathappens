@@ -57,10 +57,6 @@ public class TokenStoreService {
         return Optional.of(UUID.fromString(userId));
     }
 
-    public void revokeToken(String jti) {
-        revokeAccessTokenAndLinkedRefreshToken(jti);
-    }
-
     public void revokeAccessTokenAndLinkedRefreshToken(String jti) {
         String userId = redisTemplate.opsForValue().get(activeTokenKey(jti));
 
