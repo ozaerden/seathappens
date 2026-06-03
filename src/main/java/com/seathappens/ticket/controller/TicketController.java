@@ -1,10 +1,15 @@
 package com.seathappens.ticket.controller;
 
+import com.seathappens.ticket.dto.request.ValidateTicketRequest;
 import com.seathappens.ticket.dto.response.TicketResponse;
+import com.seathappens.ticket.dto.response.ValidateTicketResponse;
 import com.seathappens.ticket.service.TicketService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,6 +29,14 @@ public class TicketController {
         return ticketService.getTicketById(id);
     }
 
+    @Operation(summary = "Get ticket QR code.")
+    @GetMapping(value = "/{id}/qr-code", version = "1", produces = MediaType.IMAGE_PNG_VALUE)
+    public ResponseEntity<byte[]> getTicketQrCode(@PathVariable UUID id) {
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_PNG)
+                .body(ticketService.generateTicketQrCode(id));
+    }
+
     @Operation(summary = "List all tickets.")
     @GetMapping(version = "1")
     public List<TicketResponse> getTickets() {
@@ -40,6 +53,12 @@ public class TicketController {
     @GetMapping(value = "/my", version = "1")
     public List<TicketResponse> getMyTickets() {
         return ticketService.getMyTickets();
+    }
+
+    @Operation(summary = "Validate ticket.")
+    @PostMapping(value = "/validate", version = "1")
+    public ValidateTicketResponse validateTicket(@Valid @RequestBody ValidateTicketRequest request) {
+        return ticketService.validateTicket(request);
     }
 
 }

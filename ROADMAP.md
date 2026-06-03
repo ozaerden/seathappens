@@ -12,6 +12,8 @@
 - Order flow
 - Payment flow
 - Ticket generation
+- QR ticket generation
+- Ticket validation / scanning simulation
 
 ### Reliability
 
@@ -42,22 +44,15 @@
 - Refresh token flow
 - Refresh token rotation
 
+### Authorization
+
+- Order ownership protection
+- Ticket ownership protection
+- Admin backoffice visibility for orders and tickets
+
 ## Current Priority
 
-### 1. Ownership Expansion
-
-Extend authenticated-user ownership checks to:
-
-- Orders
-- Tickets
-
-Current state:
-
-- Reservations are linked to `User`.
-- Order creation already checks that the reservation belongs to the current user.
-- `getMyOrders()` and `getMyTickets()` exist, but direct access by arbitrary id should be reviewed.
-
-### 2. Notification Evolution
+### 1. Notification Evolution
 
 Current state:
 
@@ -72,6 +67,12 @@ Next:
 - Clear failure state for delivery simulation.
 
 ## Near Future
+
+### Product Flow Polish
+
+- Decide whether customer-facing list-all endpoints should be renamed or hidden in favor of `/my`.
+- Add richer ticket validation response details if needed.
+- Consider a separate staff role for venue scanning instead of using `ADMIN`.
 
 ### Audit & Observability
 
@@ -92,13 +93,6 @@ Goals:
 - centralized logs
 - searchable audit history
 - easier debugging of asynchronous flows
-
-### QR Ticketing
-
-- QR generation
-- Ticket validation endpoint
-- Ticket scanning simulation
-- Ticket status transition review
 
 ## Mid-Term
 
@@ -171,4 +165,3 @@ Potential targets:
 - Request/response tracing not implemented.
 - Notification delivery is simulated by database persistence only.
 - No distributed deployment strategy yet.
-- Direct entity id access should be reviewed for ownership enforcement.

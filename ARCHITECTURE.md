@@ -221,6 +221,14 @@ Tickets belong to users, orders, and ticket types.
 
 Tickets are issued automatically after successful payment. Each ticket receives a unique generated ticket code.
 
+Ticket access is ownership-aware:
+
+- Admin can inspect all tickets.
+- Customer can inspect only their own tickets.
+- Ticket QR codes are visible only to the ticket owner or admin.
+
+QR ticketing is implemented as a PNG QR code endpoint. Ticket validation is simulated by an admin-only scan endpoint that moves tickets from `ISSUED` to `USED`.
+
 ### Notification
 
 Notifications are currently simulated by persisted database records.
@@ -413,4 +421,3 @@ The system should keep evolving as a modular monolith. Future microservice extra
 - Notification Service
 
 Do not extract them until the monolith boundaries, tests, and operational patterns are mature.
-

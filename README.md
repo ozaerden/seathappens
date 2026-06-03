@@ -67,7 +67,11 @@ Venue
 
  - JWT access token generation
  - JWT `jti` claim usage
+ - Refresh token generation
+ - Refresh token rotation
  - Redis-backed active token storage
+ - Redis-backed refresh token storage
+ - Logout revokes current access token and linked refresh token
  - Token revocation on user deactivation
  - Stateless authentication with server-side revocation support
 
@@ -126,6 +130,9 @@ Payment success publishes `PAYMENT_SUCCEEDED` event to Kafka asynchronously.
 - Automatic ticket issuance
 - Unique ticket code generation
 - List tickets by order
+- Ticket ownership protection
+- QR code generation
+- Ticket validation / scanning simulation
 
 ---
 
@@ -196,12 +203,15 @@ JWT is generated
 JWT jti is stored in Redis
 active-token:{jti} -> userId
 user-tokens:{userId} -> list of active token ids
+refresh-token:{refreshToken} -> userId
+user-refresh-tokens:{userId} -> list of active refresh tokens
+access-refresh-token:{jti} -> refreshToken
 ```
 
 When a user is deactivated:
 
 ```text
-All active tokens of the user are removed from Redis
+All active access and refresh tokens of the user are removed from Redis
 Existing JWTs become invalid immediately
 ```
 This allows the application to keep JWT authentication mostly stateless while still supporting immediate token revocation.
@@ -227,22 +237,3 @@ Flyway is used for schema versioning.
 Migration files are located under: `src/main/resources/db/migration`
 
 ---
-
-# Next Phase
-
-Planned improvements:
-
- - Refresh token flow
- - Email Simulation
- - QR Code Generation
- - ELK / Observability
- - MongoDB Audit Logging
- - Distributed Microservice Architecture
- - Kubernetes Deployment
- - CI/CD Pipelines
- - API Gateway
- - Reactive programming
- - Mono / Flux
- - Rate limiter
- - Circuit breaker
- - Token validation at gateway layer

@@ -246,7 +246,7 @@ Open design questions:
 5. Request/response tracing not implemented.
 6. Notification delivery simulation only.
 7. No distributed deployment strategy yet.
-8. Direct resource ownership checks should be reviewed for orders and tickets.
+8. A dedicated staff role for ticket scanning is not implemented yet.
 
 ## Known Non-Issues
 

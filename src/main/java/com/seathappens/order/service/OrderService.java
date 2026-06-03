@@ -15,6 +15,7 @@ import com.seathappens.reservation.entity.ReservationStatus;
 import com.seathappens.reservation.repository.ReservationRepository;
 import com.seathappens.security.service.CurrentUserService;
 import com.seathappens.user.entity.User;
+import com.seathappens.user.entity.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,13 +70,22 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderResponse getOrderById(UUID id) {
-        return orderRepository.findById(id)
-                .map(OrderResponse::from)
+        Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorCode.ORDER_NOT_FOUND));
+
+        validateOrderVisibleToCurrentUser(order);
+
+        return OrderResponse.from(order);
     }
 
     @Transactional(readOnly = true)
     public List<OrderResponse> getOrders() {
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (!UserRole.ADMIN.equals(currentUser.getRole())) {
+            return getMyOrders();
+        }
+
         return orderRepository.findAll()
                 .stream()
                 .map(OrderResponse::from)
@@ -118,6 +128,18 @@ public class OrderService {
                 .stream()
                 .map(OrderResponse::from)
                 .toList();
+    }
+
+    private void validateOrderVisibleToCurrentUser(Order order) {
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (UserRole.ADMIN.equals(currentUser.getRole())) {
+            return;
+        }
+
+        if (!order.getUser().getId().equals(currentUser.getId())) {
+            throw new BusinessException(ErrorCode.ORDER_NOT_OWNED_BY_USER);
+        }
     }
     
 }
