@@ -58,6 +58,10 @@ public class TokenStoreService {
     }
 
     public void revokeToken(String jti) {
+        revokeAccessTokenAndLinkedRefreshToken(jti);
+    }
+
+    public void revokeAccessTokenAndLinkedRefreshToken(String jti) {
         String userId = redisTemplate.opsForValue().get(activeTokenKey(jti));
 
         redisTemplate.delete(activeTokenKey(jti));

@@ -150,7 +150,7 @@ public class AuthService {
             throw new BusinessException(ErrorCode.INVALID_CREDENTIALS);
         }
 
-        tokenStoreService.revokeToken(jti);
+        tokenStoreService.revokeAccessTokenAndLinkedRefreshToken(jti);
     }
 
     private String generateRefreshToken() {
