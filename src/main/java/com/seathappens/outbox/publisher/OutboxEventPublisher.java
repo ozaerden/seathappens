@@ -51,6 +51,7 @@ public class OutboxEventPublisher {
                     event.getEventType(),
                     event.getAggregateType(),
                     event.getAggregateId(),
+                    event.getCorrelationId(),
                     event.getPayload()
             );
 
@@ -68,9 +69,10 @@ public class OutboxEventPublisher {
             event.setNextRetryAt(null);
 
             log.info(
-                    "Published outbox event. eventId={}, eventType={}",
+                    "Published outbox event. eventId={}, eventType={}, correlationId={}",
                     event.getId(),
-                    event.getEventType()
+                    event.getEventType(),
+                    event.getCorrelationId()
             );
 
         } catch (JsonProcessingException exception) {
@@ -90,10 +92,11 @@ public class OutboxEventPublisher {
                 event.setNextRetryAt(null);
 
                 log.error(
-                        "Outbox event permanently failed. eventId={}, eventType={}, retryCount={}",
+                        "Outbox event permanently failed. eventId={}, eventType={}, retryCount={}, correlationId={}",
                         event.getId(),
                         event.getEventType(),
                         nextRetryCount,
+                        event.getCorrelationId(),
                         exception
                 );
             } else {
@@ -103,10 +106,11 @@ public class OutboxEventPublisher {
                 );
 
                 log.warn(
-                        "Outbox event publish failed. Scheduled retry. eventId={}, eventType={}, retryCount={}",
+                        "Outbox event publish failed. Scheduled retry. eventId={}, eventType={}, retryCount={}, correlationId={}",
                         event.getId(),
                         event.getEventType(),
                         nextRetryCount,
+                        event.getCorrelationId(),
                         exception
                 );
             }

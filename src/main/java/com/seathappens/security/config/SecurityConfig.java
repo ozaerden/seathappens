@@ -31,10 +31,10 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                        "/api/auth/register",
-                        "/api/auth/login",
-                        "/api/auth/refresh",
-                        "/swagger-ui.html",
+                                "/api/auth/register",
+                                "/api/auth/login",
+                                "/api/auth/refresh",
+                                "/swagger-ui.html",
                                 "/swagger-ui/**",
                                 "/v3/api-docs/**"
                         ).permitAll()
@@ -44,7 +44,8 @@ public class SecurityConfig {
                                 "/api/events/**",
                                 "/api/ticket-types/**",
                                 "/api/inventories/**",
-                                "/api/users/**"
+                                "/api/users/**",
+                                "/api/notifications/**"
                         ).hasRole("ADMIN")
 
                         .requestMatchers(

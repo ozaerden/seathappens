@@ -24,6 +24,8 @@ public enum ErrorCode {
     TICKET_ALREADY_ISSUED("TICKET_ALREADY_ISSUED", "Ticket already issued for this order"),
     TICKET_NOT_ISSUED("TICKET_NOT_ISSUED", "Ticket is not issued"),
     TICKET_QR_GENERATION_ERROR("TICKET_QR_GENERATION_ERROR", "Failed to generate ticket QR code"),
+    NOTIFICATION_NOT_FOUND("NOTIFICATION_NOT_FOUND", "Notification not found"),
+    NOTIFICATION_NOT_FAILED("NOTIFICATION_NOT_FAILED", "Notification is not failed"),
     ACCESS_DENIED("ACCESS_DENIED", "Access denied"),
     OUTBOX_SERIALIZATION_ERROR("OUTBOX_SERIALIZATION_ERROR", "Failed to serialize outbox event payload"),
     EMAIL_ALREADY_EXISTS("EMAIL_ALREADY_EXISTS", "Email already exists"),

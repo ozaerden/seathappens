@@ -243,7 +243,7 @@ Prefer focused unit tests before broader integration tests. Use integration test
 
 ### Current Known Follow-up
 
-Refresh token support, reservation/order/payment/ticket ownership, QR generation, ticket validation, and SMTP notification email delivery exist. The next practical follow-ups are:
+Refresh token support, reservation/order/payment/ticket ownership, QR generation, ticket validation, SMTP notification email delivery, admin notification endpoints, request correlation logging, and correlation id propagation into outbox/Kafka exist. The next practical follow-ups are:
 
 - Decide whether logout should revoke only the current session or all sessions.
 - Consider a dedicated staff role for ticket scanning instead of using `ADMIN`.

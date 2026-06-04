@@ -138,6 +138,20 @@ Payment success publishes `PAYMENT_SUCCEEDED` event to Kafka asynchronously.
 - QR code generation
 - Ticket validation / scanning simulation
 
+### Observability
+
+- Correlation ID per HTTP request
+- `X-Correlation-Id` request/response header
+- Request logging with method, path, status, duration, user id, and correlation id
+- Correlation ID propagation into outbox and Kafka event envelopes
+
+### Notification Administration
+
+- List notifications
+- Filter notifications by status
+- Get notification by id
+- Retry failed notifications
+
 ---
 
 # Kafka & Outbox Architecture
@@ -203,6 +217,7 @@ The project currently demonstrates:
 - At-least-once delivery
 - Idempotent consumers
 - Event envelopes
+- Correlation ID propagation
 - Asynchronous processing
 - Event-driven communication
 

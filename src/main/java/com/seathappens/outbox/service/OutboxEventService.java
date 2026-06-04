@@ -2,6 +2,7 @@ package com.seathappens.outbox.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.seathappens.common.context.CorrelationIdContext;
 import com.seathappens.common.exception.ErrorCode;
 import com.seathappens.common.exception.InfrastructureException;
 import com.seathappens.outbox.entity.OutboxEvent;
@@ -22,6 +23,7 @@ public class OutboxEventService {
                     .aggregateType(aggregateType)
                     .aggregateId(aggregateId)
                     .eventType(eventType)
+                    .correlationId(CorrelationIdContext.getCurrentCorrelationId().orElse(null))
                     .payload(objectMapper.writeValueAsString(payload))
                     .retryCount(0)
                     .build();

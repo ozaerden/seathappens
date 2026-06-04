@@ -12,6 +12,8 @@ public interface NotificationRepository extends JpaRepository<Notification, UUID
 
     boolean existsByEventId(UUID eventId);
 
+    List<Notification> findByStatus(NotificationStatus status);
+
     List<Notification> findTop20ByStatusAndNextRetryAtIsNullOrStatusAndNextRetryAtBeforeOrderByCreatedAtAsc(
             NotificationStatus statusWithoutRetry,
             NotificationStatus statusReadyForRetry,

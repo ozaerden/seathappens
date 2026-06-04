@@ -35,6 +35,16 @@
 - Ticket QR PNG attachments
 - Notification status transitions
 - Notification email retry support
+- Admin notification list/detail endpoints
+- Admin failed-notification retry endpoint
+
+### Observability
+
+- Correlation id per HTTP request
+- Request logging
+- `X-Correlation-Id` response header
+- Correlation id propagation into outbox events
+- Correlation id propagation into Kafka event envelopes
 
 ### Security
 
@@ -68,13 +78,11 @@
 
 ## Near Future
 
-### Audit & Observability
+### Audit
 
 - MongoDB audit log
-- Request logging
-- Response logging
-- Correlation id
-- Trace id
+- Audit event modeling
+- Audit consumer design
 
 ### ELK Stack
 

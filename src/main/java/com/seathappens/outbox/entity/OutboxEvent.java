@@ -24,6 +24,9 @@ public class OutboxEvent extends BaseEntity {
     @Column(nullable = false, length = 100)
     private String eventType;
 
+    @Column(length = 100)
+    private String correlationId;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String payload;
 

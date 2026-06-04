@@ -405,6 +405,20 @@ Main categories:
 
 Error codes are declared in `ErrorCode`.
 
+## Observability
+
+Every HTTP request receives a correlation id.
+
+- If the client sends `X-Correlation-Id`, the application reuses it.
+- If the client does not send one, the application generates a UUID.
+- The same value is returned in the `X-Correlation-Id` response header.
+- Request logs include method, path, status, duration, user id when available, and correlation id.
+- Outbox events store correlation id when created from an HTTP request.
+- Kafka event envelopes include correlation id.
+- Outbox publisher and Kafka consumer logs include correlation id.
+
+Scheduler-created work may not always have a correlation id because it can run outside an HTTP request.
+
 ## API Versioning
 
 Controller mappings use Spring's `version = "1"` mapping style. API versioning config lives in `common.config`.

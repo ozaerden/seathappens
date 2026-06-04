@@ -39,17 +39,19 @@ public class OutboxEventConsumer {
 
         if (processedKafkaEventRepository.existsByEventId(outboxMessage.eventId())) {
             log.info(
-                    "Skipping already processed Kafka event. eventId={}, eventType={}",
+                    "Skipping already processed Kafka event. eventId={}, eventType={}, correlationId={}",
                     outboxMessage.eventId(),
-                    outboxMessage.eventType()
+                    outboxMessage.eventType(),
+                    outboxMessage.correlationId()
             );
             return;
         }
 
         log.info(
-                "Consumed Kafka event. eventId={}, eventType={}, payload={}",
+                "Consumed Kafka event. eventId={}, eventType={}, correlationId={}, payload={}",
                 outboxMessage.eventId(),
                 outboxMessage.eventType(),
+                outboxMessage.correlationId(),
                 outboxMessage.payload()
         );
 

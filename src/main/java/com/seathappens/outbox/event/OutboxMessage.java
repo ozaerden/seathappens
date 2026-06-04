@@ -7,6 +7,7 @@ public record OutboxMessage(
         String eventType,
         String aggregateType,
         String aggregateId,
+        String correlationId,
         String payload
 ) {
 }
