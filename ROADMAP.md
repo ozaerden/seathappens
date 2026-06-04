@@ -46,6 +46,13 @@
 - Correlation id propagation into outbox events
 - Correlation id propagation into Kafka event envelopes
 
+### Audit Logging
+
+- Kafka-backed audit event publishing
+- MongoDB audit log persistence
+- Audit events for auth, payment, and ticket validation
+- Istanbul timezone timestamp in audit documents
+
 ### Security
 
 - User registration
@@ -78,11 +85,11 @@
 
 ## Near Future
 
-### Audit
+### Audit Follow-ups
 
-- MongoDB audit log
-- Audit event modeling
-- Audit consumer design
+- Add more audit actions where useful.
+- Add admin audit search endpoints if Mongo shell queries become inconvenient.
+- Consider request/response log shipping after ELK is introduced.
 
 ### ELK Stack
 

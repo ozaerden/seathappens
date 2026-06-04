@@ -209,6 +209,37 @@ Current behavior:
 - Notifications retry and eventually move to `FAILED` on repeated failures.
 - SMTP credentials are configured externally and are not hardcoded.
 
+## Decision: Kafka-backed MongoDB Audit Logging
+
+Chosen:
+
+```text
+Business action -> Kafka audit event -> MongoDB audit document
+```
+
+Instead of:
+
+```text
+Business service writes directly to MongoDB
+```
+
+Reason:
+
+- Main business flow does not wait for MongoDB writes.
+- Kafka keeps audit events when MongoDB is temporarily unavailable.
+- Audit persistence is asynchronous and replayable.
+- Audit consumers can scale independently.
+- This matches the existing event-driven learning path.
+
+Current audited actions:
+
+- user registration
+- user login
+- access token refresh
+- user logout
+- payment processing
+- ticket validation
+
 ## Decision: Refresh Tokens
 
 Current status:
@@ -242,14 +273,12 @@ Open design questions:
 
 ## Known Technical Debt
 
-1. Correlation id not implemented.
-2. Centralized audit logging not implemented.
-3. ELK integration not implemented.
-4. API Gateway not implemented.
-5. Request/response tracing not implemented.
-6. Dedicated production email provider integration is not implemented yet.
-7. No distributed deployment strategy yet.
-8. A dedicated staff role for ticket scanning is not implemented yet.
+1. ELK integration not implemented.
+2. API Gateway not implemented.
+3. Dedicated production email provider integration is not implemented yet.
+4. No distributed deployment strategy yet.
+5. A dedicated staff role for ticket scanning is not implemented yet.
+6. Admin audit search endpoints are not implemented yet.
 
 ## Known Non-Issues
 
@@ -260,4 +289,5 @@ The following are intentional:
 - notification persistence as the durable source for email delivery
 - Redis token revocation approach
 - Kafka consumer idempotency table
+- Kafka-backed MongoDB audit logging
 - keeping microservice extraction as a future step

@@ -28,6 +28,7 @@ public enum ErrorCode {
     NOTIFICATION_NOT_FAILED("NOTIFICATION_NOT_FAILED", "Notification is not failed"),
     ACCESS_DENIED("ACCESS_DENIED", "Access denied"),
     OUTBOX_SERIALIZATION_ERROR("OUTBOX_SERIALIZATION_ERROR", "Failed to serialize outbox event payload"),
+    AUDIT_SERIALIZATION_ERROR("AUDIT_SERIALIZATION_ERROR", "Failed to serialize audit event payload"),
     EMAIL_ALREADY_EXISTS("EMAIL_ALREADY_EXISTS", "Email already exists"),
     INVALID_CREDENTIALS("INVALID_CREDENTIALS", "Invalid email or password"),
     INVALID_REFRESH_TOKEN("INVALID_REFRESH_TOKEN", "Invalid refresh token"),

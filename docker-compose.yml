@@ -19,6 +19,15 @@ services:
     ports:
       - "6379:6379"
 
+  mongo:
+    image: mongo:8
+    container_name: seathappens-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
   kafka:
     image: apache/kafka:4.1.2
     container_name: seathappens-kafka
@@ -51,3 +60,4 @@ services:
 
 volumes:
   postgres_data:
+  mongo_data:

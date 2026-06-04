@@ -419,6 +419,42 @@ Every HTTP request receives a correlation id.
 
 Scheduler-created work may not always have a correlation id because it can run outside an HTTP request.
 
+## Audit Logging
+
+Business audit logging uses Kafka before MongoDB.
+
+Flow:
+
+```text
+Business action
+  -> AuditEventPublisher
+  -> Kafka topic: seathappens.audit-events
+  -> AuditEventConsumer
+  -> MongoDB collection: audit_logs
+```
+
+Current audited actions:
+
+- user registration
+- user login
+- token refresh
+- user logout
+- payment processing
+- ticket validation
+
+Audit documents include:
+
+- audit event id
+- action
+- actor user id
+- entity type
+- entity id
+- correlation id
+- Istanbul timezone timestamp string
+- metadata
+
+Kafka is used before MongoDB so audit persistence is asynchronous, durable enough for local learning, replayable, and independent from the main transactional path.
+
 ## API Versioning
 
 Controller mappings use Spring's `version = "1"` mapping style. API versioning config lives in `common.config`.

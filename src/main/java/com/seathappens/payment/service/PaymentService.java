@@ -1,5 +1,7 @@
 package com.seathappens.payment.service;
 
+import com.seathappens.audit.event.AuditAction;
+import com.seathappens.audit.service.AuditEventPublisher;
 import com.seathappens.common.exception.BusinessException;
 import com.seathappens.common.exception.ErrorCode;
 import com.seathappens.common.exception.ResourceNotFoundException;
@@ -25,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -37,6 +40,7 @@ public class PaymentService {
     private final TicketService ticketService;
     private final OutboxEventService outboxEventService;
     private final CurrentUserService currentUserService;
+    private final AuditEventPublisher auditEventPublisher;
 
     @Transactional
     public PaymentResponse processPayment(ProcessPaymentRequest request) {
@@ -88,6 +92,18 @@ public class PaymentService {
                     )
             );
         }
+
+        auditEventPublisher.publish(
+                AuditAction.PAYMENT_PROCESSED,
+                order.getUser().getId(),
+                "Payment",
+                savedPayment.getId().toString(),
+                Map.of(
+                        "orderId", order.getId().toString(),
+                        "status", savedPayment.getStatus().name(),
+                        "amount", savedPayment.getAmount().toString()
+                )
+        );
 
         return PaymentResponse.from(savedPayment);
     }

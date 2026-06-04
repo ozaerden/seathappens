@@ -23,6 +23,9 @@ spring:
       host: localhost
       port: 6379
 
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/seathappens_audit}
+
   kafka:
     bootstrap-servers: localhost:9092
     producer:
@@ -74,6 +77,10 @@ seathappens:
     email-scheduler-fixed-rate-ms: 15000
     email-max-retry-count: 3
     email-retry-delay-ms: 30000
+
+  audit:
+    topic-name: seathappens.audit-events
+    consumer-group: seathappens-audit-consumer
 
   security:
     jwt:

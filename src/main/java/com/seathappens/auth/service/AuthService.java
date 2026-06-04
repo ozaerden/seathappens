@@ -1,5 +1,7 @@
 package com.seathappens.auth.service;
 
+import com.seathappens.audit.event.AuditAction;
+import com.seathappens.audit.service.AuditEventPublisher;
 import com.seathappens.auth.dto.request.LoginRequest;
 import com.seathappens.auth.dto.request.RefreshTokenRequest;
 import com.seathappens.auth.dto.request.RegisterRequest;
@@ -25,6 +27,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.SecureRandom;
 import java.time.Duration;
 import java.util.Base64;
+import java.util.Map;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -39,6 +43,7 @@ public class AuthService {
     private final JwtTokenService jwtTokenService;
     private final TokenStoreService tokenStoreService;
     private final JwtProperties jwtProperties;
+    private final AuditEventPublisher auditEventPublisher;
 
     @Transactional
     public AuthResponse register(RegisterRequest request) {
@@ -52,6 +57,14 @@ public class AuthService {
                 .build();
 
         User savedUser = userRepository.save(user);
+
+        auditEventPublisher.publish(
+                AuditAction.USER_REGISTERED,
+                savedUser.getId(),
+                "User",
+                savedUser.getId().toString(),
+                Map.of("email", savedUser.getEmail())
+        );
 
         return new AuthResponse(
                 savedUser.getId(),
@@ -87,6 +100,14 @@ public class AuthService {
                 generatedToken.jti(),
                 refreshToken,
                 accessTokenTtl
+        );
+
+        auditEventPublisher.publish(
+                AuditAction.USER_LOGGED_IN,
+                user.getId(),
+                "User",
+                user.getId().toString(),
+                Map.of("email", user.getEmail())
         );
 
         return new LoginResponse(
@@ -127,6 +148,14 @@ public class AuthService {
                 accessTokenTtl
         );
 
+        auditEventPublisher.publish(
+                AuditAction.ACCESS_TOKEN_REFRESHED,
+                user.getId(),
+                "User",
+                user.getId().toString(),
+                Map.of("email", user.getEmail())
+        );
+
         return new LoginResponse(
                 generatedToken.accessToken(),
                 TOKEN_TYPE,
@@ -151,6 +180,16 @@ public class AuthService {
         }
 
         tokenStoreService.revokeAccessTokenAndLinkedRefreshToken(jti);
+
+        UUID userId = UUID.fromString(jwt.getSubject());
+
+        auditEventPublisher.publish(
+                AuditAction.USER_LOGGED_OUT,
+                userId,
+                "User",
+                userId.toString(),
+                Map.of("jti", jti)
+        );
     }
 
     private String generateRefreshToken() {

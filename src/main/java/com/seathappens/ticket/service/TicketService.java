@@ -1,5 +1,7 @@
 package com.seathappens.ticket.service;
 
+import com.seathappens.audit.event.AuditAction;
+import com.seathappens.audit.service.AuditEventPublisher;
 import com.seathappens.common.exception.BusinessException;
 import com.seathappens.common.exception.ErrorCode;
 import com.seathappens.common.exception.ResourceNotFoundException;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -31,6 +34,7 @@ public class TicketService {
     private final TicketCodeGenerator ticketCodeGenerator;
     private final CurrentUserService currentUserService;
     private final TicketQrCodeService ticketQrCodeService;
+    private final AuditEventPublisher auditEventPublisher;
 
     @Transactional
     public void issueTickets(Order order) {
@@ -125,6 +129,18 @@ public class TicketService {
         }
 
         ticket.setStatus(TicketStatus.USED);
+
+        auditEventPublisher.publish(
+                AuditAction.TICKET_VALIDATED,
+                currentUser.getId(),
+                "Ticket",
+                ticket.getId().toString(),
+                Map.of(
+                        "ticketCode", ticket.getTicketCode(),
+                        "previousStatus", previousStatus.name(),
+                        "currentStatus", ticket.getStatus().name()
+                )
+        );
 
         return new ValidateTicketResponse(
                 ticket.getId(),

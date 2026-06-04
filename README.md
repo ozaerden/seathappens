@@ -34,6 +34,7 @@ The project focuses on learning and applying real-world backend engineering conc
 - Kafka UI
 - JavaMailSender
 - Mailtrap SMTP
+- MongoDB
 
 ---
 
@@ -144,6 +145,13 @@ Payment success publishes `PAYMENT_SUCCEEDED` event to Kafka asynchronously.
 - `X-Correlation-Id` request/response header
 - Request logging with method, path, status, duration, user id, and correlation id
 - Correlation ID propagation into outbox and Kafka event envelopes
+
+### Audit Logging
+
+- Business audit events
+- Kafka-backed audit pipeline
+- MongoDB audit log persistence
+- Istanbul timezone timestamp field for readable audit review
 
 ### Notification Administration
 
@@ -256,8 +264,11 @@ Infrastructure includes:
 - Kafka
 - Kafka UI
 - Redis
+- MongoDB
 
 Kafka UI: http://localhost:8085
+
+MongoDB: mongodb://localhost:27017/seathappens_audit
 
 Swagger UI: http://localhost:8080/swagger-ui.html
 
