@@ -77,33 +77,29 @@
 
 ## Current Priority
 
-### 1. Product Flow Polish
+### 1. ELK Stack
 
-- Decide whether customer-facing list-all endpoints should be renamed or hidden in favor of `/my`.
-- Add richer ticket validation response details if needed.
-- Consider a separate staff role for venue scanning instead of using `ADMIN`.
-
-## Near Future
-
-### Audit Follow-ups
-
-- Add more audit actions where useful.
-- Add admin audit search endpoints if Mongo shell queries become inconvenient.
-- Consider request/response log shipping after ELK is introduced.
-
-### ELK Stack
+Next focus:
 
 - Elasticsearch
 - Logstash
 - Kibana
+- structured application logs
+- centralized log search
 
-Goals:
+Goal:
 
-- centralized logs
-- searchable audit history
-- easier debugging of asynchronous flows
+- make request logs, Kafka/outbox logs, notification logs, and audit-related logs searchable in one place
+- keep MongoDB audit logs as business audit records, not as raw request/response logs
 
 ## Mid-Term
+
+### Product Flow Polish
+
+- Decide whether customer-facing list-all endpoints should be renamed or hidden in favor of `/my`.
+- Add richer ticket validation response details if needed.
+- Consider a separate staff role for venue scanning instead of using `ADMIN`.
+- Add admin audit search endpoints if Mongo shell queries become inconvenient.
 
 ### API Gateway
 
@@ -128,6 +124,8 @@ Learn and apply:
 Primary target:
 
 - API Gateway
+
+Reactive programming is optional and should stay mostly in the gateway. Do not rewrite the monolith to WebFlux just to practice `Mono` / `Flux`.
 
 ### Distributed Architecture
 
@@ -167,9 +165,8 @@ Potential targets:
 
 ## Known Technical Debt
 
-- Correlation id not implemented.
-- Centralized audit logging not implemented.
 - ELK integration not implemented.
 - API Gateway not implemented.
-- Request/response tracing not implemented.
 - No distributed deployment strategy yet.
+- Dedicated staff role for ticket scanning is not implemented.
+- Admin audit search endpoints are not implemented.
