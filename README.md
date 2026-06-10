@@ -321,3 +321,12 @@ Flyway is used for schema versioning.
 Migration files are located under: `src/main/resources/db/migration`
 
 ---
+
+### Browser Bookmarks
+
+- https://github.com/ozaerden/seathappens
+- http://localhost:8080/swagger-ui/index.html
+- http://localhost:8085/ (Kafka UI)
+- https://mailtrap.io/home
+- http://localhost:9200/ (ElasticSearch)
+- http://localhost:5601/app/home#/ (Elastic)
