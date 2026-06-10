@@ -240,6 +240,21 @@ Current audited actions:
 - payment processing
 - ticket validation
 
+## Decision: ELK for Operational Logs
+
+Chosen:
+
+```text
+Logback JSON logs -> Logstash -> Elasticsearch -> Kibana
+```
+
+Reason:
+
+- Keep request and application logs searchable without changing business flow.
+- Use correlation id to follow one request across logs.
+- Keep MongoDB audit logs focused on business events instead of raw application logs.
+- Practice the ELK stack without prematurely splitting the monolith.
+
 ## Decision: Refresh Tokens
 
 Current status:
@@ -273,12 +288,15 @@ Open design questions:
 
 ## Known Technical Debt
 
-1. ELK integration not implemented.
-2. API Gateway not implemented.
-3. Dedicated production email provider integration is not implemented yet.
-4. No distributed deployment strategy yet.
-5. A dedicated staff role for ticket scanning is not implemented yet.
-6. Admin audit search endpoints are not implemented yet.
+No blocking technical debt remains for the current modular-monolith scope.
+
+Optional follow-ups:
+
+1. API Gateway can be added as a separate learning exercise.
+2. Dedicated production email provider integration can replace Mailtrap later.
+3. Kubernetes, CI/CD, and cloud deployment can be added as infrastructure practice.
+4. A dedicated staff role can replace `ADMIN` for ticket scanning.
+5. Admin audit search endpoints can be added if direct MongoDB inspection becomes inconvenient.
 
 ## Known Non-Issues
 

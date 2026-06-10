@@ -419,6 +419,21 @@ Every HTTP request receives a correlation id.
 
 Scheduler-created work may not always have a correlation id because it can run outside an HTTP request.
 
+### ELK
+
+Local ELK integration is intentionally simple:
+
+```text
+Application Logback JSON logs
+  -> Logstash TCP input
+  -> Elasticsearch index: seathappens-logs-*
+  -> Kibana data view
+```
+
+The monolith still logs to the console for local development. Logstash receives structured JSON logs with MDC fields such as `correlationId` and `userId`.
+
+MongoDB audit logs remain business audit records. ELK is for operational application logs.
+
 ## Audit Logging
 
 Business audit logging uses Kafka before MongoDB.
@@ -450,7 +465,7 @@ Audit documents include:
 - entity type
 - entity id
 - correlation id
-- Istanbul timezone timestamp string
+- `occurredAt` timestamp string with local timezone offset
 - metadata
 
 Kafka is used before MongoDB so audit persistence is asynchronous, durable enough for local learning, replayable, and independent from the main transactional path.
@@ -471,3 +486,5 @@ The system should keep evolving as a modular monolith. Future microservice extra
 - Notification Service
 
 Do not extract them until the monolith boundaries, tests, and operational patterns are mature.
+
+Microservice extraction is optional for this project. The current goal is satisfied when the monolith remains easy to split later without paying distributed-system complexity today.

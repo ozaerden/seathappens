@@ -35,6 +35,9 @@ The project focuses on learning and applying real-world backend engineering conc
 - JavaMailSender
 - Mailtrap SMTP
 - MongoDB
+- Elasticsearch
+- Logstash
+- Kibana
 
 ---
 
@@ -145,13 +148,15 @@ Payment success publishes `PAYMENT_SUCCEEDED` event to Kafka asynchronously.
 - `X-Correlation-Id` request/response header
 - Request logging with method, path, status, duration, user id, and correlation id
 - Correlation ID propagation into outbox and Kafka event envelopes
+- JSON log shipping to Logstash
+- Centralized log search in Kibana
 
 ### Audit Logging
 
 - Business audit events
 - Kafka-backed audit pipeline
 - MongoDB audit log persistence
-- Istanbul timezone timestamp field for readable audit review
+- `occurredAt` timestamp with local timezone offset for readable audit review
 
 ### Notification Administration
 
@@ -265,12 +270,49 @@ Infrastructure includes:
 - Kafka UI
 - Redis
 - MongoDB
+- Elasticsearch
+- Logstash
+- Kibana
 
 Kafka UI: http://localhost:8085
 
 MongoDB: mongodb://localhost:27017/seathappens_audit
 
+Elasticsearch: http://localhost:9200
+
+Kibana: http://localhost:5601
+
+Logstash TCP input: localhost:5001
+
 Swagger UI: http://localhost:8080/swagger-ui.html
+
+### ELK Local Usage
+
+Start ELK infrastructure:
+
+```text
+docker compose up -d elasticsearch logstash kibana
+```
+
+The application sends structured JSON logs to Logstash over TCP.
+
+In Kibana, create a data view:
+
+```text
+seathappens-logs-*
+```
+
+Useful fields:
+
+- `correlationId`
+- `userId`
+- `logger_name`
+- `level`
+- `message`
+- `method`
+- `path`
+- `status`
+- `durationMs`
 
 ### Database Migrations
 

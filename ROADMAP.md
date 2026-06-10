@@ -45,13 +45,16 @@
 - `X-Correlation-Id` response header
 - Correlation id propagation into outbox events
 - Correlation id propagation into Kafka event envelopes
+- ELK local integration
+- Structured JSON log shipping to Logstash
+- Kibana searchable application logs
 
 ### Audit Logging
 
 - Kafka-backed audit event publishing
 - MongoDB audit log persistence
 - Audit events for auth, payment, and ticket validation
-- Istanbul timezone timestamp in audit documents
+- `occurredAt` timestamp with local timezone offset in audit documents
 
 ### Security
 
@@ -75,24 +78,20 @@
 - Ticket ownership protection
 - Admin backoffice visibility for orders and tickets
 
-## Current Priority
+## Finalization Status
 
-### 1. ELK Stack
+The core backend learning goals are now complete enough to treat the project as a finished modular-monolith portfolio project.
 
-Next focus:
+No microservice extraction is required to finalize the project. The current architecture should stay as a modular monolith with clear boundaries and production-oriented infrastructure patterns.
 
-- Elasticsearch
-- Logstash
-- Kibana
-- structured application logs
-- centralized log search
+Recommended finalization work:
 
-Goal:
+- keep documentation current
+- keep local Docker infrastructure reproducible
+- add tests only for flows that become risky to change
+- avoid adding new infrastructure unless it teaches a clear concept
 
-- make request logs, Kafka/outbox logs, notification logs, and audit-related logs searchable in one place
-- keep MongoDB audit logs as business audit records, not as raw request/response logs
-
-## Mid-Term
+## Optional Future Work
 
 ### Product Flow Polish
 
@@ -103,15 +102,17 @@ Goal:
 
 ### API Gateway
 
-Separate gateway application.
+Optional separate gateway application.
 
-Features:
+Possible features:
 
 - JWT validation
 - token revocation check
 - rate limiting
 - circuit breaker
-- routing
+- routing to the monolith
+
+This is useful for learning gateway patterns, but it is not required for the monolith to be considered complete.
 
 ### Reactive Stack
 
@@ -138,9 +139,9 @@ Potential service extraction:
 
 Only do this after the modular monolith is mature enough that boundaries are obvious.
 
-## Long-Term
-
 ### Kubernetes
+
+Optional learning target.
 
 - Deployments
 - Services
@@ -150,12 +151,16 @@ Only do this after the modular monolith is mature enough that boundaries are obv
 
 ### CI/CD
 
+Optional learning target.
+
 - GitHub Actions
 - Docker build
 - Automated tests
 - Deployment pipelines
 
 ### Cloud Deployment
+
+Optional learning target.
 
 Potential targets:
 
@@ -165,8 +170,11 @@ Potential targets:
 
 ## Known Technical Debt
 
-- ELK integration not implemented.
-- API Gateway not implemented.
-- No distributed deployment strategy yet.
-- Dedicated staff role for ticket scanning is not implemented.
-- Admin audit search endpoints are not implemented.
+No blocking technical debt remains for the current modular-monolith scope.
+
+Optional follow-ups:
+
+- Decide whether logout should revoke only the current session or all sessions.
+- Consider a dedicated staff role for ticket scanning instead of using `ADMIN`.
+- Add admin audit search endpoints if Compass or shell queries become inconvenient.
+- Add API Gateway, Kubernetes, CI/CD, or cloud deployment only as separate learning exercises.
